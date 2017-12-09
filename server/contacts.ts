@@ -6,7 +6,7 @@ export const users = [
         phone: '+49 000 1111',
         birthday: '1984-01-02',
         website: 'thoughtram.io',
-        image: '/assets/images/0.jpg',
+        imageURL: '/assets/images/0.jpg',
         address: {
           street: 'thoughtram road 1',
           zip: '65222',
@@ -21,7 +21,7 @@ export const users = [
         phone: '+49 000 222',
         birthday: '1991-03-31',
         website: 'thoughtram.io',
-        image: '/assets/images/1.jpg',
+        imageURL: '/assets/images/1.jpg',
         address: {
           street: 'thoughtram road 1',
           zip: '65222',
@@ -36,7 +36,7 @@ export const users = [
         phone: '+49 000 333',
         birthday: '1981-03-31',
         website: '',
-        image: '/assets/images/3.jpg',
+        imageURL: '/assets/images/3.jpg',
         address: {
           street: 'Who Cares Street 42',
           zip: '65222',
@@ -51,7 +51,7 @@ export const users = [
         phone: '+49 000 000',
         birthday: '1990-02-18',
         website: '',
-        image: '/assets/images/4.jpg',
+        imageURL: '/assets/images/4.jpg',
         address: {
           street: '3745 denny street',
           zip: '86337',
@@ -66,7 +66,7 @@ export const users = [
         phone: '',
         birthday: '',
         website: '',
-        image: '/assets/images/5.jpg',
+        imageURL: '/assets/images/5.jpg',
         address: {
           street: '1459 tara street',
           zip: '18371',
@@ -81,7 +81,7 @@ export const users = [
         phone: '',
         birthday: '',
         website: '',
-        image: '/assets/images/6.jpg',
+        imageURL: '/assets/images/6.jpg',
         address: {
           street: '6503 tara street',
           zip: '43378',
@@ -96,7 +96,7 @@ export const users = [
         phone: '',
         birthday: '',
         website: '',
-        image: '/assets/images/7.jpg',
+        imageURL: '/assets/images/7.jpg',
         address: {
           street: '6554 park lane',
           zip: '43378',
@@ -111,7 +111,7 @@ export const users = [
         phone: '',
         birthday: '',
         website: '',
-        image: '/assets/images/8.jpg',
+        imageURL: '/assets/images/8.jpg',
         address: {
           street: '2749 church road',
           zip: '87125',
@@ -126,7 +126,7 @@ export const users = [
         phone: '',
         birthday: '',
         website: '',
-        image: '/assets/images/9.jpg',
+        imageURL: '/assets/images/9.jpg',
         address: {
           street: '8436 tara street',
           zip: '59949',
@@ -141,7 +141,7 @@ export const users = [
         phone: '',
         birthday: '',
         website: '',
-        image: '/assets/images/10.jpg',
+        imageURL: '/assets/images/10.jpg',
         address: {
           street: '2523 park road',
           zip: '59949',
@@ -156,7 +156,7 @@ export const users = [
         phone: '',
         birthday: '',
         website: '',
-        image: '/assets/images/11.jpg',
+        imageURL: '/assets/images/11.jpg',
         address: {
           street: '9791 grafton street',
           zip: '30165',

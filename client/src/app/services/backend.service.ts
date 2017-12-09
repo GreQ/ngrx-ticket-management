@@ -13,7 +13,7 @@ import 'rxjs/add/operator/shareReplay';
 import {Ticket, User} from '../models/ticket';
 
 @Injectable()
-export class Backend {
+export class BackendService {
   constructor(private http: HttpClient) { }
 
   tickets():Observable<Ticket[]> {
@@ -32,12 +32,12 @@ export class Backend {
     return this.http.get<User>(`/user/${id}`);
   }
 
-  newTicket(payload: {title: string}):Observable<Ticket> {
+  newTicket(payload: {title: string, description?:string}):Observable<Ticket> {
     return this.http.post<Ticket>('/api/tickets', payload);
   }
 
-  assign(ticketId: string, userId: number) {
-    return this.http.post('/api/assign', {ticketId, userId});
+  assign(ticketId: string, assigneeId: string) {
+    return this.http.post<Ticket>('/api/assign', {ticketId, assigneeId});
   }
 
   complete(ticketId: string, completed: boolean = true):Observable<Ticket> {
@@ -45,3 +45,30 @@ export class Backend {
   }
 }
 
+/**
+ * Inject User link into Tickets [using assigneeId]
+ */
+function injectUsers([tickets, users]) {
+  const lookupUser = findUserBy(users);
+  tickets.forEach(t => t.user = lookupUser(t.assigneeId));
+
+  return tickets;
+}
+
+/**
+ *
+ */
+export function findUserBy(users) {
+  return (id) => {
+    return users.reduce((found, user)=>{
+      return found || ((user.id == id) ? user : null);
+    },null);
+  };
+}
+
+/**
+ * Reducer fucntion
+ */
+export function findTicketBy(ticketId) {
+  return (seed, ticket) => seed ? seed : ((ticket.id == ticketId) ? ticket : null);
+}
