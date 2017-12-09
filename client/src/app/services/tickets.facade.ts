@@ -1,62 +1,42 @@
-import { Component } from '@angular/core';
-import {Ticket} from './models/ticket';
-import {Backend} from './services/backend.service';
+import {Observable} from 'rxjs/Observable';
+import {tap} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
+import {Ticket} from '../models/ticket';
+import {Backend} from './backend.service';
 
-/**
- * Issues:
- *  1) Does not handle out-or-order
- *  2) Extracts state instead of using async pipe
- *  3) Does not use observables
- *
- *
- *  applyFilters() is 'like' a redux selector
- */
-@Component({
-  selector: 'ticket-app',
-  template: `
-    <h2>Tickets</h2>
-    
-    <input (input)="doFilter(assignee.value)" #assignee type="text">
-    
-    <ul>
-      <li *ngFor="let t of tickets">
-        Ticket: {{t.id}}, {{t.title}}
-        <button (click)="doComplete(t)">Complete</button>
-      </li>
-    </ul>
-  
-    <input value="" #newTicket type="text">
-    <button (click)="doAddTicket(newTicket.value)">Add New Ticket</button>
-   `,
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-  tickets    : Ticket[] = [];   // filtered tickets
+export class TicketsService {
+  tickets$   : Subject<Ticket[]> = new Subject<Ticket[]>();
   allTickets : Ticket[] = [];   // all known tickets
   filter     : string   = "";   // filter criteria
 
   constructor(private backend: Backend) {
     backend.tickets().subscribe((list:Ticket[]) => {
       this.allTickets = list;
-      this.tickets    = this.refreshFilteredList();
+      this.announceChanges();
     });
   }
 
-  // ***************************************************************
-  // Actions
-  // ***************************************************************
-
-  doFilter(val:string) {
-    this.filter  = val;
-    this.tickets = this.refreshFilteredList();
+  loadAll():Observable<Ticket[]> {
+    return this.backend.tickets().pipe(
+      tap( list => {
+        this.allTickets = list;
+        this.announceChanges();
+      })
+    );
   }
 
-  doAddTicket(title:string) {
+
+  applyFilter(criteria:string) {
+    this.filter = criteria;
+    this.announceChanges();
+  }
+
+  addTicket(title:string) {
     this.backend
       .newTicket( {title} )
       .subscribe((ticket:Ticket) => {
-        this.allTickets = this.addTicket(ticket);
-        this.tickets    = this.refreshFilteredList();
+        this.allTickets = addTicket(ticket, this.allTickets);
+        this.announceChanges();
       });
   }
 
@@ -64,29 +44,20 @@ export class AppComponent {
     this.backend
       .complete(ticket.id, true)
       .subscribe((ticket:Ticket) => {
-        this.allTickets = this.completeTicket(ticket);
-        this.tickets    = this.refreshFilteredList();
+        this.allTickets = addTicket(ticket, this.allTickets);
+        this.announceChanges();
       })
   }
 
-  // ***************************************************************
-  // 'Action methods'
-  // ***************************************************************
 
-  refreshFilteredList() {
-    return applyFilters(this.filter, this.allTickets);
+  private announceChanges() {
+    this.tickets$.next(
+        applyFilters(this.filter, this.allTickets)
+    );
   }
-
-  addTicket(ticket:Ticket) {
-    return addTicket(ticket, this.allTickets);
-  }
-
-  completeTicket(ticket:Ticket) {
-    ticket.completed = true;
-    return addTicket( ticket, this.allTickets );
-  }
-
 }
+
+
 
 /**
  * Notice this is analogous to a Redux `reducer` function...
