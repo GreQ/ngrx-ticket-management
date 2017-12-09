@@ -1,0 +1,17 @@
+
+.mat-drawer {
+  width: 340px !important;
+}
+
+.mat-drawer-content {
+  margin-left: 340px !important;
+}
+
+.centered {
+  height: 75vh;
+}
+
+
+ticket-card {
+  width:60%
+}

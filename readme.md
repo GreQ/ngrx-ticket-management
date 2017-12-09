@@ -17,7 +17,7 @@ Run `./start.sh` to launch the API server and the client.
 
 
 * The REST server runs on the port 3000, and
-* The Web app runs on the port `http://localhost:4200`.
+* The Web app runs on the port `http://localhost:4200`. 
 
 Open the web ap in the browser, and you'll see the tickets and users lists.
 
@@ -47,27 +47,31 @@ const SAMPLE = { id:"1", title: "Prepare Challenge Lessons"};
       <ul>
         <li>
           ({{ticket.id}}) {{ticket.title}}
-          <button (click)="noop()">Complete</button>
+          <button (click)="">Complete</button>
         </li>
       </ul>
       
       <hr> 
       
       <input #newTicket>
-      <button (click)="noop()">Add New Ticket</button>
+      <button (click)="">Add New Ticket</button>
    `
 })
 export class AppComponent {
   ticket : Ticket = SAMPLE;
   constructor(public service: Backend) { }
-
-  noop() { ;}
 }
 ````
 
-
 <br/>
 
+---
+
+>  Solutions to the Challenge are detailed in the [Lessons](lessons.md) documentation
+
+---
+
+<br/>
 
 ##### Challenge Requirements
 

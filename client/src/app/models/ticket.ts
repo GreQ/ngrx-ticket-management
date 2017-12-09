@@ -1,13 +1,14 @@
 export type User = {
   id: string;
   name: string;
+  imageURL: string;
 };
 
 export type Ticket = {
-  id: string;
+  id?: string;
   title: string;
   description?: string;
   completed?: boolean;
   assigneeId?: string;
-  user?: User;
+  imageURL?: string;
 };

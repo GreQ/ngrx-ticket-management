@@ -1,12 +1,12 @@
 export const users = [
   {
     id: '0',
-    name: 'Christoph Burgdorf',
-    email: 'christoph@thoughtram.io',
-    phone: '+49 000 1111',
+    name: 'Jeff Cross',
+    email: 'Jeff@nrwl.io',
+    phone: '',
     birthday: '1984-01-02',
-    website: 'thoughtram.io',
-    image: '/assets/images/0.jpg',
+    website: 'nrwl.io',
+    imageURL: '/assets/images/team_photo_jeff.jpg',
     address: {
       street: 'thoughtram road 1',
       zip: '65222',
@@ -16,12 +16,12 @@ export const users = [
   },
   {
     id: '1',
-    name: 'Pascal Precht',
-    email: 'pascal@thoughtram.io',
-    phone: '+49 000 222',
+    name: 'Victor Savkin',
+    email: 'victor@nrwl.io',
+    phone: '',
     birthday: '1991-03-31',
-    website: 'thoughtram.io',
-    image: '/assets/images/1.jpg',
+    website: 'nrwl.io',
+    imageURL: '/assets/images/team_photo_victor.jpg',
     address: {
       street: 'thoughtram road 1',
       zip: '65222',
@@ -31,12 +31,12 @@ export const users = [
   },
   {
     id: '2',
-    name: 'Nicole Hansen',
-    email: 'who@car.es',
+    name: 'Thomas Burleson',
+    email: 'thomas@nrwl.io',
     phone: '+49 000 333',
     birthday: '1981-03-31',
     website: '',
-    image: '/assets/images/3.jpg',
+    imageURL: '/assets/images/team_photo_thomas.jpg',
     address: {
       street: 'Who Cares Street 42',
       zip: '65222',
@@ -46,12 +46,12 @@ export const users = [
   },
   {
     id: '3',
-    name: 'Zoe Moore',
-    email: 'zoe@moore.com',
+    name: 'Dan Muller',
+    email: 'dan@nrwl.io',
     phone: '+49 000 000',
     birthday: '1990-02-18',
     website: '',
-    image: '/assets/images/4.jpg',
+    imageURL: '/assets/images/team_photo_dan.jpg',
     address: {
       street: '3745 denny street',
       zip: '86337',
@@ -61,12 +61,12 @@ export const users = [
   },
   {
     id: '4',
-    name: 'Diane Hale',
-    email: '',
+    name: 'James Henry',
+    email: 'James@nrwl.io',
     phone: '',
     birthday: '',
     website: '',
-    image: '/assets/images/5.jpg',
+    imageURL: '/assets/images/team_photo_james.jpg',
     address: {
       street: '1459 tara street',
       zip: '18371',
@@ -76,12 +76,12 @@ export const users = [
   },
   {
     id: '5',
-    name: 'Barry Ford',
+    name: 'Justin Schwartzenberger',
     email: '',
     phone: '',
     birthday: '',
     website: '',
-    image: '/assets/images/6.jpg',
+    imageURL: '/assets/images/team_photo_justin.jpg',
     address: {
       street: '6503 tara street',
       zip: '43378',
@@ -91,12 +91,12 @@ export const users = [
   },
   {
     id: '6',
-    name: 'Diana Ellis',
+    name: 'Tor H.',
     email: '',
     phone: '',
     birthday: '',
     website: '',
-    image: '/assets/images/7.jpg',
+    imageURL: '/assets/images/team_photo_tor.jpg',
     address: {
       street: '6554 park lane',
       zip: '43378',
@@ -106,12 +106,12 @@ export const users = [
   },
   {
     id: '7',
-    name: 'Ella Grant',
+    name: 'Jason Jean',
     email: '',
     phone: '',
     birthday: '',
     website: '',
-    image: '/assets/images/8.jpg',
+    imageURL: '/assets/images/team_photo_jason.jpg',
     address: {
       street: '2749 church road',
       zip: '87125',
@@ -121,12 +121,12 @@ export const users = [
   },
   {
     id: '8',
-    name: 'Brent Mason',
+    name: 'Aysegul Yonet',
     email: '',
     phone: '',
     birthday: '',
     website: '',
-    image: '/assets/images/9.jpg',
+    imageURL: '/assets/images/team_photo_aysegul.jpg',
     address: {
       street: '8436 tara street',
       zip: '59949',
@@ -136,12 +136,12 @@ export const users = [
   },
   {
     id: '9',
-    name: 'Sam Thomas',
+    name: 'Samantha Thomas',
     email: '',
     phone: '',
     birthday: '',
     website: '',
-    image: '/assets/images/10.jpg',
+    imageURL: '/assets/images/10.jpg',
     address: {
       street: '2523 park road',
       zip: '59949',
@@ -156,7 +156,7 @@ export const users = [
     phone: '',
     birthday: '',
     website: '',
-    image: '/assets/images/11.jpg',
+    imageURL: '/assets/images/11.jpg',
     address: {
       street: '9791 grafton street',
       zip: '30165',

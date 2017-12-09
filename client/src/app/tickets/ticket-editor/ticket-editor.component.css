@@ -1,0 +1,31 @@
+
+.mat-drawer {
+  width: 340px !important;
+}
+
+.mat-drawer-content {
+  margin-left: 340px !important;
+}
+
+.centered {
+  height: 93vh;
+  background: url('/assets/astronaut.jpg');
+}
+
+
+
+ticket-card {
+  width: 80%;
+    margin-bottom: 15%;
+    max-width: 600px;
+    min-width: 405px;
+}
+
+
+
+.floating-button {
+  position: absolute;
+  right: 2em;
+  bottom: 40px;
+  color: #fff;
+}

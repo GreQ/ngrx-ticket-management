@@ -1,0 +1,38 @@
+
+.floating-button {
+  position: absolute;
+  right: 2em;
+  bottom: 2em;
+  color: #fff;
+}
+
+.mat-drawer {
+  width: 340px !important;
+  background-color: #fff;
+  background-image: linear-gradient( #c7cffb14, #7f8bd1c9 );
+}
+
+.mat-drawer-content {
+  margin-left: 340px !important;
+}
+
+.floating-button {
+  bottom: 4em;
+}
+
+.centered {
+  height: 93vh;
+}
+
+
+
+.nrwl {
+  position: absolute;
+  left: 45%;
+  top: 33%;
+}
+
+.nrwl circle {
+  stroke: #48c4e5 !important;
+}
+

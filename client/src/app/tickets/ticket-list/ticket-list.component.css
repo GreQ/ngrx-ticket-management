@@ -1,0 +1,58 @@
+[mat-list-item] {
+  border-bottom: 1px solid #ddd;
+  text-decoration: none;
+  background-color: #ffffffc7;
+}
+
+[mat-list-item]:hover {
+  background-color: #ffd7ac;
+}
+
+[mat-list-item]:active {
+  background-color: #a5d8e3;
+}
+
+.mat-nav-list {
+  padding-top: 0;
+}
+
+.mat-nav-list .mat-subheader {
+  border: none;
+  font-size: 10px;
+  letter-spacing: 1px;
+  line-height: 24px;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 0;
+  padding: 0 16px;
+  background: #333333;
+  color: #e0e0e0;
+}
+
+mat-slide-toggle {
+  position: absolute;
+  top: 12px;
+  right: 31px;
+  color: white;
+}
+
+.mat-slide-toggle-content {
+  font: 400 0.9em/20px Roboto, "Helvetica Neue", sans-serif;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+ticket-search {
+  background-color: #ffffffc7;
+}
+
+.copyright {
+  font-size: 0.65em;
+  position: absolute;
+  left:10%;
+  bottom: 30px;
+  color:dimgray;
+  pointer-events: none;
+}
