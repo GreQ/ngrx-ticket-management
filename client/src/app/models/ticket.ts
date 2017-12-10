@@ -4,7 +4,7 @@ export type User = {
 };
 
 export type Ticket = {
-  id: string;
+  id?: string;
   title:string;
   description?: string;
   completed?: boolean;

@@ -136,14 +136,14 @@ app.post('/api/assign', (req, res) => {
 
 app.post('/api/complete', (req, res) => {
   setTimeout(() => {
-    const ticketId = req.body.ticketId;
-    const completed = req.body.completed;
-
+    const {ticketId, completed} = req.body;
     const matchingTicket = tickets.filter(t => t.id === ticketId)[0];
 
     if (!matchingTicket) {
+      console.log(`Cannot find ticket ${ticketId}`);
       res.status(404).send({error: `Cannot find ticket ${ticketId}`});
     } else {
+      console.log(`ticket ${ticketId} completed = ${completed}`);
       matchingTicket.completed = completed;
       res.send(matchingTicket);
     }

@@ -6,10 +6,12 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from './material.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 
-import {TruncatePipe} from './utils/truncate';
-import {Backend} from './services/backend.service';
-
 import {AppComponent} from './app.component';
+
+import {TruncatePipe} from './utils/truncate';
+import {BackendService} from './services/backend.service';
+import {TicketFacade} from './state/facade';
+
 
 @NgModule({
   declarations: [
@@ -24,7 +26,7 @@ import {AppComponent} from './app.component';
     MaterialModule,
     FlexLayoutModule,
   ],
-  providers: [Backend],
+  providers: [BackendService, TicketFacade],
   bootstrap: [AppComponent]
 })
 export class AppModule {  }
