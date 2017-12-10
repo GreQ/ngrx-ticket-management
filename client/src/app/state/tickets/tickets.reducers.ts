@@ -1,21 +1,17 @@
 import {isArray} from 'rxjs/util/isArray';
-import {Ticket} from '../models/ticket';
+import {Ticket} from '../../models/ticket';
 
-import { TicketAction, TicketActionTypes } from './actions';
+import {TicketAction, TicketActionTypes, TicketsFilter} from './tickets.actions';
 
 // ***************************************************************
 // Real Reducer
 // ***************************************************************
 
 export function ticketsReducer(list: Ticket[], action: TicketAction): Ticket[] {
-  if ( action.type = TicketActionTypes.TICKET ) {
-    const items = isArray(action.data) ? action.data : [action.data];
-    action = {type: TicketActionTypes.TICKETS, data: items};
-  }
-  
   switch(action.type) {
+    case TicketActionTypes.SAVE :
     case TicketActionTypes.TICKETS :
-      const items = action.data as Ticket[];
+      const items : Ticket[] = isArray(action.data) ? action.data : [action.data];
       list = items.reduce((acc, it)=> {
           return addTicket(it, acc);
       },list);
@@ -35,12 +31,15 @@ export function ticketsReducer(list: Ticket[], action: TicketAction): Ticket[] {
  * @param list
  * @param filter
  */
-export function ticketsFilter(criteria:string, list:Ticket[]):Ticket[] {
-  const inComplete = (t:Ticket):boolean => (t.completed !== true);
+export function ticketsFilter(filters:TicketsFilter, list:Ticket[]):Ticket[] {
   return list
-    .filter(it => matchesCriteria(criteria,it))
-    .filter( inComplete );
+    .filter(it => matchesCriteria(filters.filterBy,it))
+    .filter( filters.showAll ? showAll : notCompleted );
 }
+
+const showAll = (it => it);
+const notCompleted = (t:Ticket):boolean => (t.completed !== true);
+
 
 /**
  * Add ticket to existing list. If already existing,

@@ -1,0 +1,28 @@
+
+.floating-button {
+  position: absolute;
+  right: 2em;
+  bottom: 2em;
+  color: #fff;
+}
+
+.mat-drawer {
+  width: 340px !important;
+}
+
+.mat-drawer-content {
+  margin-left: 340px !important;
+}
+
+.floating-button {
+  bottom: 4em;
+}
+
+.centered {
+  height: 75vh;
+}
+
+
+ticket-card {
+  width:60%
+}

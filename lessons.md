@@ -87,7 +87,7 @@ We will start with a crude UI to explore how raw dataservices is better managed 
 *  Step 5: Using promise queue
 *  Step 6: Use Redux store/action patterns
 *  Step 7: Simulate effects for async actions
-*  Step 8: Use TicketFacade service
+*  Step 8: Use TicketsFacade service
 
 ###### Phase 2: Rich UI + State Management + Routing + Forms
 

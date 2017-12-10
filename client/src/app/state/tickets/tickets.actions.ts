@@ -1,4 +1,8 @@
-import {Ticket} from '../models/ticket';
+import {Ticket} from '../../models/ticket';
+
+export class TicketsFilter {
+  constructor(public filterBy:string,  public showAll = true){ }
+}
 
 export type TicketAction = {
   type : string,
@@ -7,20 +11,21 @@ export type TicketAction = {
 
 export const enum TicketActionTypes {
   FILTER   = '[tickets] filter',
-
   TICKETS  = '[tickets] list',
-  TICKET   = '[tickets] add',
+  LOADALL  = '[tickets] load',
 
-  LOAD     = '[tickets] load',
-  SAVE     = '[tickets] save',
-  COMPLETE = '[tickets] complete',
+  SAVE     = '[ticket] save',
+  COMPLETE = '[ticket] complete',
+  ASSIGN   = '[ticket] assign',
+  CREATE   = '[ticket] create'
 };
+
   // ***************************************************************
   // Request 'Actions'
   // ***************************************************************
 
   export function loadAllAction():TicketAction {
-    return { type: TicketActionTypes.LOAD };
+    return { type: TicketActionTypes.LOADALL };
   }
 
   export function completeAction(ticket:Ticket):TicketAction {
@@ -28,8 +33,11 @@ export const enum TicketActionTypes {
   }
 
   export function saveAction(ticket:Ticket): TicketAction {
-    console.log(Date.now(), ticket);
     return { type: TicketActionTypes.SAVE, data: ticket };
+  }
+
+  export function  assignAction(ticket:Ticket): TicketAction {
+    return { type: TicketActionTypes.ASSIGN, data: ticket };
   }
 
   // ***************************************************************

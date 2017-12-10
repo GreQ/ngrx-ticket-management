@@ -1,6 +1,7 @@
 export type User = {
   id: string;
   name: string;
+  imageURL : string;
 };
 
 export type Ticket = {
@@ -9,5 +10,5 @@ export type Ticket = {
   description?: string;
   completed?: boolean;
   assigneeId?: string;
-  user?:User;
+  imageURL?:string;
 };

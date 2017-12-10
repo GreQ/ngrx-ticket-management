@@ -1,29 +1,20 @@
 import { Component } from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-
-import { TicketFacade } from './state/facade';
-import { Ticket } from './models/ticket';
 
 @Component({
   selector: 'ticket-app',
-  template: `
-    <h2>Tickets</h2>
-    <input (input)="service.filter(filter.value)" #filter>
-    
-    <ul>
-      <li *ngFor="let t of (tickets$ | async)">
-        Ticket: {{t.id}}, {{t.title}}
-        <button (click)="service.closeTicket(t)">Complete</button>
-      </li>
-    </ul>
-  
-    <input #newTicket>
-    <button (click)="service.addTicket(newTicket.value)">Add New Ticket</button>
-   `,
-  styleUrls: ['./app.component.css']
+  styleUrls: [ './app.component.css' ],
+  template: `      
+    <div class="mat-elevation-z2">
+      <mat-toolbar color="tickets" >
+          <i class="material-icons gap" style="color:white;font-size: 36px">assignment</i>
+          <span class="appTitle">Todo Tickets</span>
+          <div fxFlex></div>
+          <img src="/assets/nrwl_logo.png" style="transform: scale(0.75)">
+      </mat-toolbar>
+    </div>
+    <ticket-dashboard></ticket-dashboard>
+   
+   `
 })
 export class AppComponent {
-  tickets$ : Observable<Ticket[]>   = this.service.tickets$;
-  constructor(public service: TicketFacade) { }
 }
-
