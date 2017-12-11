@@ -2,8 +2,8 @@ import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/merge';
+import { of } from 'rxjs/observable/of';
+import { map, merge } from 'rxjs/operators';
 
 import {TicketsFacade} from '../../state/tickets/tickets.facade';
 import {Ticket, User} from '../../models/ticket';
@@ -26,9 +26,11 @@ import {Ticket, User} from '../../models/ticket';
 })
 export class TicketEditorComponent {
   users$  : Observable<User[]> = this.service.users$;
-  ticket$ : Observable<Ticket> = this.service.watchTicketById( makeTicketID$(this.route) );
+  ticket$ : Observable<Ticket> = this.service.selectedTicket$;
 
-  constructor(public service: TicketsFacade, public route:ActivatedRoute) {  }
+  constructor(public service: TicketsFacade, public route:ActivatedRoute) {
+    makeTicketID$(route).subscribe(ticketId => this.service.select(ticketId));
+  }
 }
 
 /**
@@ -36,8 +38,8 @@ export class TicketEditorComponent {
  * params ticket 'id'
  */
 function  makeTicketID$( route: ActivatedRoute ):Observable<string> {
-  const current$ = Observable.of(route.snapshot.paramMap.get('id'));
-  const future$ = route.params.map( params => params['id']);
+  const current$ = of(route.snapshot.paramMap.get('id'));
+  const future$ = route.params.pipe( map( params => params['id']));
 
-  return current$.merge( future$ );
+  return current$.pipe(merge( future$ ));
 }

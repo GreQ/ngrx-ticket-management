@@ -4,11 +4,13 @@ import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
-import {APP_ROUTES} from './app.routes';
 import {MaterialModule} from './material.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import {StoreModule} from '@ngrx/store';
+import {EffectsModule} from '@ngrx/effects';
 
 import {AppComponent} from './app.component';
+import {ROOT_REDUCER} from './state/app.state';
 import {UsersFacade} from './state/users/users.facade';
 import {TicketDashboardComponent} from './tickets/ticket-dashboard/ticket-dashboard.component';
 import {TicketListComponent} from './tickets/ticket-list/ticket-list.component';
@@ -19,6 +21,8 @@ import {TicketSearchComponent} from './tickets/ticket-search/ticket-search.compo
 import {TruncatePipe} from './utils/truncate';
 import {BackendService} from './services/backend.service';
 import {TicketsFacade} from './state/tickets/tickets.facade';
+
+import {APP_ROUTES} from './app.routes';
 
 @NgModule({
   declarations: [
@@ -37,7 +41,10 @@ import {TicketsFacade} from './state/tickets/tickets.facade';
     HttpClientModule,
     MaterialModule,
     FlexLayoutModule,
+
     RouterModule.forRoot(APP_ROUTES),
+    StoreModule.forRoot(ROOT_REDUCER),
+    EffectsModule.forRoot([ TicketsFacade, UsersFacade ]),
   ],
   providers: [BackendService, TicketsFacade, UsersFacade],
   bootstrap: [AppComponent]

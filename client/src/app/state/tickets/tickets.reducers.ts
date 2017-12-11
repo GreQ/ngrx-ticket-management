@@ -1,37 +1,95 @@
+import {createSelector} from '@ngrx/store';
+import {ApplicationState} from '../app.state';
+
 import {isArray} from 'rxjs/util/isArray';
 import {Ticket} from '../../models/ticket';
 
 import {TicketAction, TicketActionTypes, TicketsFilter} from './tickets.actions';
 
+
+export interface TicketsState {
+  list              : Array<Ticket>;
+  filterCriteria    : TicketsFilter;
+  selectedTicketId  : string | null;
+  loaded            : boolean;
+}
+
+const INITAL_STATE: TicketsState = {
+  list              : [ ],
+  filterCriteria    : { filterBy: '', showAll:true},
+  selectedTicketId  : null,
+  loaded            : false
+};
+
 // ***************************************************************
 // Real Reducer
 // ***************************************************************
 
-export function ticketsReducer(list: Ticket[], action: TicketAction): Ticket[] {
+export function ticketsReducer(state:TicketsState = INITAL_STATE, action: TicketAction): TicketsState {
+  let list;
+
   switch(action.type) {
-    case TicketActionTypes.SAVE :
-    case TicketActionTypes.TICKETS :
-      const items : Ticket[] = isArray(action.data) ? action.data : [action.data];
+    case TicketActionTypes.SELECTED:
+      const selectedTicketId = action.data;
+      state = {...state,  selectedTicketId };
+      break;
+
+    case TicketActionTypes.FILTER:
+      state = {...state,  filterCriteria : action.data as TicketsFilter};
+      break;
+
+    case TicketActionTypes.LOADED :
+      const loaded = true;
+      list = action.data as Ticket[];
+
+      state = {...state, list };
+      break;
+
+    case TicketActionTypes.SAVED :
+      const items = [action.data];
+
       list = items.reduce((acc, it)=> {
           return addTicket(it, acc);
-      },list);
+      },state.list);
 
-      break;
-    case TicketActionTypes.COMPLETE : 
-      const ticket = action.data as Ticket;
-      list = addTicket( {...ticket, completed : true }, list );
+      state = {...state,  list, loaded };
       break;
   }
 
-  return list;
+  return state;
 }
+
+
+// ***************************************************************
+// Queries used by @ngrx Store
+// ***************************************************************
+
+export namespace TicketsQuery {
+  export const getAllTickets = (state: ApplicationState) => state.tickets.list;
+  export const getLoaded = (state: ApplicationState) => state.tickets.loaded;
+  export const getFilter = (state: ApplicationState) => state.tickets.filterCriteria;
+  export const getTickets = createSelector(
+            getAllTickets, getFilter, (tickets, filters) => {
+              return applyTicketFilters(filters,  tickets);
+            }
+          );
+
+  export const getSelectedTicketId = (state: ApplicationState) => state.tickets.selectedTicketId;
+  export const getSelectedTicket = createSelector( getAllTickets, getSelectedTicketId,
+              (tickets, id) => {
+                let ticket = tickets.find(ticket => ticket.id == id);
+                return ticket ? Object.assign({}, ticket) : undefined;
+              }
+          );
+}
+
 
 /**
  * Notice this is analogous to a Redux `reducer` function...
  * @param list
  * @param filter
  */
-export function ticketsFilter(filters:TicketsFilter, list:Ticket[]):Ticket[] {
+export function applyTicketFilters(filters:TicketsFilter, list:Ticket[]):Ticket[] {
   return list
     .filter(it => matchesCriteria(filters.filterBy,it))
     .filter( filters.showAll ? showAll : notCompleted );

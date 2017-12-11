@@ -1,147 +1,148 @@
 import { Injectable } from '@angular/core';
 
+import { Store } from '@ngrx/store';
+import { Actions, Effect, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import {Observable} from 'rxjs/Observable';
-import {Subscription} from 'rxjs/Subscription';
-import {Subject} from 'rxjs/Subject';
-import {queue} from 'rxjs/scheduler/queue';
-import {observeOn} from 'rxjs/operator/observeOn';
-import {combineLatest} from 'rxjs/observable/combineLatest';
-import 'rxjs/add/observable/defer';
-import 'rxjs/add/observable/combineLatest';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/shareReplay';
-import {assign} from 'rxjs/util/assign';
+import {forkJoin} from 'rxjs/observable/forkJoin';
+import { of } from 'rxjs/observable/of';
+import {map, switchMap, combineLatest, withLatestFrom, mergeMap, concat} from 'rxjs/operators';
 
-import {Ticket, User} from '../../models/ticket';
-import {assignAction, TicketAction, TicketActionTypes, TicketsFilter} from './tickets.actions';
-import {ticketsReducer, ticketsFilter} from './tickets.reducers';
-import {loadAllAction, completeAction, saveAction, ticketsAction} from './tickets.actions';
-
+import {NoopAction} from '../app.actions';
+import {ApplicationState} from '../app.state';
+import {LoadAllUsersAction} from '../users/users.actions';
+import {UsersFacade} from '../users/users.facade';
 import {BackendService} from '../../services/backend.service';
+import {Ticket, User} from '../../models/ticket';
+import {TicketAction, TicketActionTypes, TicketSelectedAction} from './tickets.actions';
+import {TicketsQuery} from './tickets.reducers';
+import {
+  FilterTicketsAction,
+  LoadAllTicketsAction,
+  SaveTicketAction,
+  AssignUserAction,
+  CompleteTicketAction,
+  TicketsLoadedAction,
+  TicketSavedAction,
+} from './tickets.actions';
+
+
 
 @Injectable()
 export class TicketsFacade {
-  users$ : Observable<User[]>;
-  filteredTickets$ : Observable<Ticket[]>;
-  allTickets$ : Observable<Ticket[]>;
+  users$           = this.users.allUsers$;
 
-  constructor(private backend: BackendService) {
-      this.configureStore();
-  }
+  filteredTickets$ = this.store.select(TicketsQuery.getTickets);
+  selectedTicket$  = this.store.select(TicketsQuery.getSelectedTicket);
 
-  /**
-   * Configure the store and observables
-   */
-  private configureStore() {
-    const showAll       = {filterBy:"", showAll:true};
-    const filters$      = this.filters$.startWith(showAll);
-    const ticketReducer = (acc:Ticket[], action:TicketAction) => {
-                            return ticketsReducer(acc, action);
-                          };
+  constructor(
+      private actions$: Actions,
+      private store   : Store<ApplicationState>,
+      private users   : UsersFacade,
+      private backend : BackendService) {  }
 
-    this.users$           = this.backend.users().shareReplay(1);
-    this.allTickets$      = this.store.scan( ticketReducer,[] );
-    this.filteredTickets$ = combineLatest(this.allTickets$, filters$)
-                              .map( ([tickets, filters]) => ticketsFilter(filters, tickets));
-
-    this.activateEffects();
-    this.loadAll();
-  }
-
-  /**
-   * Whenever a new ticketID event occurs, search and return the matching ticket
-   */
-  watchTicketById(ticketId$:Observable<string>):Observable<Ticket> {
-    const findTicket = (id) => (acc, it) => {
-            return acc ? acc : ((it.id == id) ? it : null);
-          };
-
-    return this.allTickets$.combineLatest(ticketId$)
-        .map(([tickets, ticketId]) => {
-          const ticketReducer = findTicket(ticketId);
-          return tickets.reduce( ticketReducer, null );
-        });
-  }
+  // ************************************************
+  // Public Code (Action Creators)
+  // ************************************************
 
   // ***************************************************************
   // Dispatch Actions
   // ***************************************************************
 
-  filter(params:TicketsFilter) {  this.filters$.next(params);   }
+  filter(filterBy:string, showAll=true)       {
+    this.store.dispatch(new FilterTicketsAction({filterBy, showAll} ));
+  }
 
-  loadAll()            { this.dispatcher.next(loadAllAction());           }
-  add(title:string)    { this.dispatcher.next(saveAction({title}));}
-  close(ticket:Ticket) { this.dispatcher.next(completeAction(ticket));    }
-  save(ticket:Ticket)  { this.dispatcher.next(saveAction(ticket));        }
-  assign(ticket:Ticket){ this.dispatcher.next(assignAction(ticket));        }
+  select(ticketId:string) { this.store.dispatch(new TicketSelectedAction(ticketId));  }
+  loadAll()            { this.store.dispatch(new LoadAllTicketsAction());             }
+  add(title:string)    { this.store.dispatch(new SaveTicketAction({title}));    }
+  close(ticket:Ticket) { this.store.dispatch(new CompleteTicketAction(ticket));       }
+  save(ticket:Ticket)  { this.store.dispatch(new SaveTicketAction(ticket));           }
+  assign(ticket:Ticket){ this.store.dispatch(new AssignUserAction(ticket));           }
 
   // ***************************************************************
-  // 'Action' Processing
+  // Public API
   // ***************************************************************
 
-  private filters$    = new Subject<TicketsFilter>();
-  private store       = new Subject<TicketAction>();
+  getTickets(): Observable<Ticket[]> {
+      this.loadAll();
+      return this.filteredTickets$;
+    }
+
+  // ***************************************************************
+  // Private Queries
+  // ***************************************************************
+
+  private loaded$          = this.store.select(TicketsQuery.getLoaded);
+  private allTickets$      = this.store.select(TicketsQuery.getAllTickets);
 
   // ***************************************************************
   // Effect Models
   // ***************************************************************
 
-  private dispatcher  = new Subject<TicketAction>();
-  private actions$ : Observable<TicketAction> = observeOn.call(this.dispatcher,queue);
+  @Effect()
+  autoLoadAllEffect$ = this.actions$
+    .ofType(ROOT_EFFECTS_INIT)
+    .pipe(
+      mergeMap(_ => [
+          new LoadAllUsersAction(),
+          new LoadAllTicketsAction()
+      ])
+    );
 
-  private loadAllEffect$ = this.actions$
-            .filter(ofType(TicketActionTypes.LOADALL))
-            .switchMap(_ => this.backend.tickets())
-            .map((tickets:Ticket[]) => ticketsAction(tickets));
+  @Effect()
+  loadAllEffect$ = this.actions$
+    .ofType(TicketActionTypes.LOADALL)
+    .pipe(
+        withLatestFrom(this.loaded$),
+        switchMap(([_, loaded]) => {
+          return loaded ? of(null) : this.backend.tickets();
+        }),
+        map( (tickets : Ticket[] | null) => {
+          if ( tickets ) {
+              tickets = this.users.updateWithAvatars(tickets);
+             return new TicketsLoadedAction(tickets)
+           }
+           return new NoopAction();
+        })
+    );
 
-  private saveEffect$ = this.actions$
-            .filter(ofType(TicketActionTypes.SAVE))
-            .map( toTicket )
-            .map((ticket:Ticket) => ticketsAction([ticket]));
 
-  private completeEffect$ = this.actions$
-            .filter(ofType(TicketActionTypes.COMPLETE))
-            .map(toTicket)
-            .switchMap(ticket => this.backend.complete(ticket.id, true) )
-            .map((ticket:Ticket) => ticketsAction([ticket]));
+  @Effect()
+  saveEffect$ = this.actions$
+    .ofType(TicketActionTypes.SAVE)
+    .pipe(
+      map( toTicket ),
+      map((ticket:Ticket) => new TicketSavedAction(ticket))
+    );
 
-  private addNewEffect$ = this.actions$
-            .filter(ofType(TicketActionTypes.CREATE))
-            .map(toTicket)
-            .switchMap(ticket => this.backend.newTicket(ticket))
-            .map((ticket:Ticket) => ticketsAction([ticket]));
+  @Effect()
+  completeEffect$ = this.actions$
+    .ofType(TicketActionTypes.COMPLETE)
+    .pipe(
+      map(toTicket),
+      switchMap(ticket => this.backend.complete(ticket.id, true) ),
+      map((ticket:Ticket) => new TicketSavedAction(ticket))
+    );
 
-  private assignEffect$ = this.actions$
-            .filter(ofType(TicketActionTypes.ASSIGN))
-            .map(toTicket)
-            .switchMap(({id, assigneeId}) => this.backend.assign(id, assigneeId))
-            .map((ticket:Ticket) => ticketsAction([ticket]));
+  @Effect()
+  addNewEffect$ = this.actions$
+    .ofType(TicketActionTypes.CREATE)
+    .pipe(
+      map(toTicket),
+      switchMap(ticket => this.backend.newTicket(ticket)),
+      map((ticket:Ticket) => new TicketSavedAction(ticket))
+    );
 
-  /**
-   * Queue all background effects and redirect resulting actions to
-   * the store and its reducers...
-   */
-  private activateEffects() {
-    this.watchAllEffects = Observable
-          .merge(
-              this.loadAllEffect$,
-              this.saveEffect$,
-              this.addNewEffect$,
-              this.completeEffect$,
-              this.assignEffect$
-          )
-          .subscribe(action => this.store.next(action));
-  }
+  @Effect()
+  assignEffect$ = this.actions$
+    .ofType(TicketActionTypes.ASSIGN)
+    .pipe(
+      map(toTicket),
+      switchMap(({id, assigneeId}) => this.backend.assign(id, assigneeId)),
+      map((ticket:Ticket) => new TicketSavedAction(ticket))
+    );
 
-  private watchAllEffects : Subscription;
+
 
 }
 

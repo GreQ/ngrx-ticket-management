@@ -1,50 +1,72 @@
+import {Action} from '@ngrx/store';
 import {Ticket} from '../../models/ticket';
 
-export class TicketsFilter {
-  constructor(public filterBy:string,  public showAll = true){ }
-}
+  export type TicketAction = {
+    type : string,
+    data?: any
+  };
 
-export type TicketAction = {
-  type : string,
-  data?: any
-};
+  export const enum TicketActionTypes {
+    FILTER   = '[tickets] filter',
+    LOADED   = '[tickets] loaded',
+    SAVED    = '[ticket] saved',
+    SELECTED = '[ticket] selected',
 
-export const enum TicketActionTypes {
-  FILTER   = '[tickets] filter',
-  TICKETS  = '[tickets] list',
-  LOADALL  = '[tickets] load',
+    LOADALL  = '[tickets] load',
+    SAVE     = '[ticket] save',
+    COMPLETE = '[ticket] complete',
+    ASSIGN   = '[ticket] assign',
+    CREATE   = '[ticket] create'
+  }
 
-  SAVE     = '[ticket] save',
-  COMPLETE = '[ticket] complete',
-  ASSIGN   = '[ticket] assign',
-  CREATE   = '[ticket] create'
-};
+  export class TicketsFilter {
+    constructor (public filterBy : string, public showAll = true){ }
+  }
 
   // ***************************************************************
   // Request 'Actions'
   // ***************************************************************
 
-  export function loadAllAction():TicketAction {
-    return { type: TicketActionTypes.LOADALL };
+  export class LoadAllTicketsAction implements Action {
+    readonly type = TicketActionTypes.LOADALL;
   }
 
-  export function completeAction(ticket:Ticket):TicketAction {
-    return { type: TicketActionTypes.COMPLETE, data: ticket };
+  export class FilterTicketsAction implements Action {
+    readonly type = TicketActionTypes.FILTER;
+    constructor(public data: TicketsFilter) { }
   }
 
-  export function saveAction(ticket:Ticket): TicketAction {
-    return { type: TicketActionTypes.SAVE, data: ticket };
+  export class CompleteTicketAction implements Action {
+    readonly type = TicketActionTypes.COMPLETE;
+    constructor(public data: Ticket) { }
   }
 
-  export function  assignAction(ticket:Ticket): TicketAction {
-    return { type: TicketActionTypes.ASSIGN, data: ticket };
+  export class SaveTicketAction implements Action {
+    readonly type = TicketActionTypes.SAVE;
+    constructor(public data: Ticket) { }
+  }
+
+  export class AssignUserAction implements Action {
+    readonly type = TicketActionTypes.ASSIGN;
+    constructor(public data: Ticket) { }
   }
 
   // ***************************************************************
   // Document 'Action'
   // ***************************************************************
 
-  export function ticketsAction(list:Ticket[]): TicketAction{
-    return { type: TicketActionTypes.TICKETS, data: list};
+  export class TicketsLoadedAction implements Action {
+    readonly type = TicketActionTypes.LOADED;
+    constructor(public data: Array<Ticket>) { }
+  }
+
+  export class TicketSavedAction implements Action {
+    readonly type = TicketActionTypes.SAVED;
+    constructor(public data: Ticket) { }
+  }
+
+  export class TicketSelectedAction implements Action {
+    readonly type = TicketActionTypes.SELECTED;
+    constructor(public data: string) { }
   }
 
