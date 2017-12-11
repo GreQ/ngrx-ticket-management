@@ -122,9 +122,16 @@ Using `@angular/material` UI components + `@angular/router` dramatically improve
 Using @ngrx libraries will dramatically simplify the facade custom code, clarify all possible actions.
 The use of `@Effect()` decorators declaratively identifies the workflow.
 
-*  [Step 11: Use @ngrx/store + effects](https://github.com/ThomasBurleson/nrwl-ticket-management/commit/386a4dbee3b4a0c99a80c3f86097c76646dd801c
-)
-*  [Step 12: Add TicketCreator UX]()
+*  [Step 11: Use @ngrx/store + effects](https://github.com/ThomasBurleson/nrwl-ticket-management/commit/386a4dbee3b4a0c99a80c3f86097c76646dd801c)
+*  [Step 12: Add TicketCreator UX](https://github.com/ThomasBurleson/nrwl-ticket-management/commit/2644677182f23d36e324f15078386a5d0aed1c99)
+*  [Step 13: Support Delayed REST Responses](https://github.com/ThomasBurleson/nrwl-ticket-management/commit/eb4f71cf391c8de155f143af5698025ad6791b36)
+
+###### Phase 4: Use Animations
+
+*  [Step 14: Add Animations](https://github.com/ThomasBurleson/nrwl-ticket-management/commit/0107cfe91ac516443c8cd0840918734442df3318)
+
+
+
 
 
 

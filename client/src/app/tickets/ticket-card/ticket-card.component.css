@@ -22,7 +22,17 @@ mat-card-header.fullBleed {
   margin-left: -24px;
   margin-right: -24px;
   margin-bottom: 24px;
+  color: inherit;
 
+}
+
+mat-card-title-group.fullBleed.create {
+  background-color: #c0fcc6 !important;
+}
+
+mat-card-title-group.fullBleed.done {
+  background-color: #454545 !important;
+  color: white;
 }
 
 .avatar-container {

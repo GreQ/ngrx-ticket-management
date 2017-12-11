@@ -6,7 +6,7 @@ import {
   MatExpansionModule,
   MatIconModule,
   MatInputModule, MatListModule,
-  MatNativeDateModule, MatProgressSpinnerModule,
+  MatNativeDateModule, MatProgressBarModule, MatProgressSpinnerModule,
   MatSelectModule, MatSidenavModule, MatSlideToggleModule,
   MatTabsModule,
   MatToolbarModule
@@ -31,6 +31,7 @@ import {BidiModule} from '@angular/cdk/bidi';
     MatSelectModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
     BidiModule
   ]
 })

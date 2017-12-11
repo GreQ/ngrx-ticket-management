@@ -32,25 +32,16 @@ export class UsersFacade {
   //  Public Methods
   //  **************************************************
 
-  getUsers(): Observable<User[]> {
-    this.store.dispatch(new LoadAllUsersAction());
-    return this.allUsers$;
-  }
-
   /**
-   * Update tickets with Avatar image URLs
+   * Special accessor used by both TicketsFacade (forkJoin)
+   * and UsersActionTypes.LOADALL
    */
-  updateWithAvatars(tickets:Ticket[]):Ticket[] {
-    this.allUsers$.subscribe(users => {
-      const lookupUser = findUserBy(users);
-      tickets.forEach(t => {
-        const user = lookupUser(t.assigneeId);
-        t.imageURL = user ? user.imageURL : '';
-        return t;
-      });
-    }).unsubscribe();
-
-    return tickets;
+  getUsers(): Observable<User[]> {
+    return this.backend.users()
+        .do(users => {
+          const usersLoaded = new UsersLoadedAction(users)
+          this.store.dispatch(usersLoaded);
+        });
   }
 
   /**
@@ -65,16 +56,13 @@ export class UsersFacade {
   //  @ngrx Effects
   //  **************************************************
 
-  @Effect()
+  @Effect({dispatch:false})
   getUsers$ = this.actions$
     .ofType(UsersActionTypes.LOADALL)
     .pipe(
       withLatestFrom(this.loaded$),
       switchMap(([_, loaded]) => {
-        return loaded ? of(null) : this.backend.users();
-      }),
-      map((users: Array<User> | null) => {
-        return users ? new UsersLoadedAction(users) : new NoopAction();
+        return loaded ? of(null) : this.getUsers();
       })
     );
 
@@ -85,10 +73,3 @@ export class UsersFacade {
 //  Private utils
 //  **************************************************
 
-  function findUserBy(users = []) {
-    return (id) => {
-      return users.reduce((found, user)=>{
-        return found || ((user.id == id) ? user : null);
-      },null);
-    };
-  }

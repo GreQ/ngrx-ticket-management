@@ -12,7 +12,7 @@ import { Component } from '@angular/core';
           <img src="/assets/nrwl_logo.png" style="transform: scale(0.75)">
       </mat-toolbar>
     </div>
-    <ticket-dashboard></ticket-dashboard>
+    <router-outlet></router-outlet>
    
    `
 })

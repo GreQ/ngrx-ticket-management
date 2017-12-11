@@ -15,12 +15,3 @@
 ticket-card {
   width:60%
 }
-
-
-
-.floating-button {
-  position: absolute;
-  right: 2em;
-  bottom: 40px;
-  color: #fff;
-}

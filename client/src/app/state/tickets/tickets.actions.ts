@@ -7,6 +7,7 @@ import {Ticket} from '../../models/ticket';
   };
 
   export const enum TicketActionTypes {
+    ACTIVITY = '[tickets] activity',
     FILTER   = '[tickets] filter',
     LOADED   = '[tickets] loaded',
     SAVED    = '[ticket] saved',
@@ -18,6 +19,7 @@ import {Ticket} from '../../models/ticket';
     ASSIGN   = '[ticket] assign',
     CREATE   = '[ticket] create'
   }
+
 
   export class TicketsFilter {
     constructor (public filterBy : string, public showAll = true){ }
@@ -54,6 +56,11 @@ import {Ticket} from '../../models/ticket';
   // ***************************************************************
   // Document 'Action'
   // ***************************************************************
+
+  export class TicketsProcessingAction implements Action {
+    readonly type = TicketActionTypes.ACTIVITY;
+    constructor(public data: boolean) { }
+  }
 
   export class TicketsLoadedAction implements Action {
     readonly type = TicketActionTypes.LOADED;

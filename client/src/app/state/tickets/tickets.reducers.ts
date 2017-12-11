@@ -12,13 +12,15 @@ export interface TicketsState {
   filterCriteria    : TicketsFilter;
   selectedTicketId  : string | null;
   loaded            : boolean;
+  processing        : number;
 }
 
 const INITAL_STATE: TicketsState = {
   list              : [ ],
   filterCriteria    : { filterBy: '', showAll:true},
   selectedTicketId  : null,
-  loaded            : false
+  loaded            : false,
+  processing        : 0
 };
 
 // ***************************************************************
@@ -29,6 +31,11 @@ export function ticketsReducer(state:TicketsState = INITAL_STATE, action: Ticket
   let list;
 
   switch(action.type) {
+    case TicketActionTypes.ACTIVITY :
+      const processing = state.processing + (!!action.data ? 1 : -1);
+      state = {...state,  processing};
+      break;
+
     case TicketActionTypes.SELECTED:
       const selectedTicketId = action.data;
       state = {...state,  selectedTicketId };
@@ -65,6 +72,7 @@ export function ticketsReducer(state:TicketsState = INITAL_STATE, action: Ticket
 // ***************************************************************
 
 export namespace TicketsQuery {
+  export const isProcessing  = (state: ApplicationState) => state.tickets.processing > 0;
   export const getAllTickets = (state: ApplicationState) => state.tickets.list;
   export const getLoaded = (state: ApplicationState) => state.tickets.loaded;
   export const getFilter = (state: ApplicationState) => state.tickets.filterCriteria;

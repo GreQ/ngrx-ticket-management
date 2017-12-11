@@ -2,18 +2,21 @@ import { Injectable } from '@angular/core';
 
 import { Store } from '@ngrx/store';
 import { Actions, Effect, ROOT_EFFECTS_INIT } from '@ngrx/effects';
+
 import {Observable} from 'rxjs/Observable';
-import {forkJoin} from 'rxjs/observable/forkJoin';
 import { of } from 'rxjs/observable/of';
-import {map, switchMap, combineLatest, withLatestFrom, mergeMap, concat} from 'rxjs/operators';
+import { map, switchMap, concat, withLatestFrom, mergeMap } from 'rxjs/operators';
+import {updateWithAvatars} from '../../utils/avatars';
 
 import {NoopAction} from '../app.actions';
 import {ApplicationState} from '../app.state';
-import {LoadAllUsersAction} from '../users/users.actions';
 import {UsersFacade} from '../users/users.facade';
 import {BackendService} from '../../services/backend.service';
-import {Ticket, User} from '../../models/ticket';
-import {TicketAction, TicketActionTypes, TicketSelectedAction} from './tickets.actions';
+import {Ticket} from '../../models/ticket';
+import {
+  TicketAction, TicketActionTypes, TicketSelectedAction,
+  TicketsProcessingAction
+} from './tickets.actions';
 import {TicketsQuery} from './tickets.reducers';
 import {
   FilterTicketsAction,
@@ -24,6 +27,8 @@ import {
   TicketsLoadedAction,
   TicketSavedAction,
 } from './tickets.actions';
+import 'rxjs/add/operator/concat';
+import 'rxjs/add/observable/forkJoin';
 
 
 
@@ -31,14 +36,18 @@ import {
 export class TicketsFacade {
   users$           = this.users.allUsers$;
 
+  allTickets$      = this.store.select(TicketsQuery.getAllTickets);
   filteredTickets$ = this.store.select(TicketsQuery.getTickets);
   selectedTicket$  = this.store.select(TicketsQuery.getSelectedTicket);
+
+  processing$      = this.store.select(TicketsQuery.isProcessing);
 
   constructor(
       private actions$: Actions,
       private store   : Store<ApplicationState>,
       private users   : UsersFacade,
-      private backend : BackendService) {  }
+      private backend : BackendService) {
+  }
 
   // ************************************************
   // Public Code (Action Creators)
@@ -63,6 +72,9 @@ export class TicketsFacade {
   // Public API
   // ***************************************************************
 
+  /**
+   * Dispatch load request action and return observable to filtered list
+   */
   getTickets(): Observable<Ticket[]> {
       this.loadAll();
       return this.filteredTickets$;
@@ -73,7 +85,6 @@ export class TicketsFacade {
   // ***************************************************************
 
   private loaded$          = this.store.select(TicketsQuery.getLoaded);
-  private allTickets$      = this.store.select(TicketsQuery.getAllTickets);
 
   // ***************************************************************
   // Effect Models
@@ -84,7 +95,6 @@ export class TicketsFacade {
     .ofType(ROOT_EFFECTS_INIT)
     .pipe(
       mergeMap(_ => [
-          new LoadAllUsersAction(),
           new LoadAllTicketsAction()
       ])
     );
@@ -95,11 +105,12 @@ export class TicketsFacade {
     .pipe(
         withLatestFrom(this.loaded$),
         switchMap(([_, loaded]) => {
-          return loaded ? of(null) : this.backend.tickets();
+          return loaded ? of([null, null]) :
+                 Observable.forkJoin(this.backend.tickets(), this.users.getUsers());
         }),
-        map( (tickets : Ticket[] | null) => {
+        map( ([tickets, users]) => {
           if ( tickets ) {
-              tickets = this.users.updateWithAvatars(tickets);
+              tickets = updateWithAvatars(tickets, users);
              return new TicketsLoadedAction(tickets)
            }
            return new NoopAction();
@@ -112,6 +123,9 @@ export class TicketsFacade {
     .ofType(TicketActionTypes.SAVE)
     .pipe(
       map( toTicket ),
+      switchMap(ticket => this.process(
+          this.backend.newTicket(ticket)
+      )),
       map((ticket:Ticket) => new TicketSavedAction(ticket))
     );
 
@@ -120,7 +134,9 @@ export class TicketsFacade {
     .ofType(TicketActionTypes.COMPLETE)
     .pipe(
       map(toTicket),
-      switchMap(ticket => this.backend.complete(ticket.id, true) ),
+      switchMap(ticket => this.process(
+          this.backend.complete(ticket.id, true)
+      )),
       map((ticket:Ticket) => new TicketSavedAction(ticket))
     );
 
@@ -129,7 +145,9 @@ export class TicketsFacade {
     .ofType(TicketActionTypes.CREATE)
     .pipe(
       map(toTicket),
-      switchMap(ticket => this.backend.newTicket(ticket)),
+      switchMap(ticket => this.process(
+          this.backend.newTicket(ticket)
+      )),
       map((ticket:Ticket) => new TicketSavedAction(ticket))
     );
 
@@ -138,13 +156,38 @@ export class TicketsFacade {
     .ofType(TicketActionTypes.ASSIGN)
     .pipe(
       map(toTicket),
-      switchMap(({id, assigneeId}) => this.backend.assign(id, assigneeId)),
+      switchMap(({id, assigneeId}) => this.process(
+          this.backend.assign(id, assigneeId)
+      )),
       map((ticket:Ticket) => new TicketSavedAction(ticket))
     );
 
+  /**
+   * Proxy target observable to add pre- and post- processing event
+   * notifications...
+   */
+  private process(target$:Observable<any>):Observable<any> {
+    const action = (val) => new TicketsProcessingAction(val);
+    const start  = () => this.store.dispatch( action(true)  );
+    const stop   = () => this.store.dispatch( action(false) );
 
+    return Observable.create(obsrv => {
+      start();
+      const watch = target$.subscribe(resp => {
+                      obsrv.next(resp);
+                      obsrv.complete();
+                      stop();
+                    },() => stop());
+
+      return () => watch.unsubscribe();
+    })
+  }
 
 }
 
 const toTicket   = (action:TicketAction):Ticket => action.data as Ticket;
 const ofType     = (type:string) => (action): boolean => action.type == type;
+
+
+
+

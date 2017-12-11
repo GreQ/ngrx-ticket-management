@@ -32,7 +32,7 @@ var tickets = [
 /**
  * Enable random delays in server responses...
  */
-var ENABLE_DELAYS = false;
+var ENABLE_DELAYS = true;
 
 
 
@@ -84,6 +84,7 @@ export const APP_ROUTES = {
             var stop = start('/api/tickets');
             setTimeout(function() {
               const t = req.body;
+              const assignedTo = users.filter(u => u.id === t.assigneeId)[0];
               if (!t.title) {
                 res.status(500).send({error: `title is a required field`});
               } else {
@@ -92,7 +93,7 @@ export const APP_ROUTES = {
                   title       : t.title,
                   description : t.description || '',
                   assigneeId  : t.assigneeId || '',
-                  imageURL    : '',
+                  imageURL    : assignedTo.imageURL,
                   completed   : false
                 };
 
@@ -130,7 +131,7 @@ export const APP_ROUTES = {
             if (!matchingTicket) {
               res.status(404).send({error: `Cannot find ticket ${ticketId}`});
             } else {
-              const assignedTo = users.filter(u => u.id === matchingTicket.id)[0];
+              const assignedTo = users.filter(u => u.id === matchingTicket.assigneeId)[0];
               matchingTicket.assigneeId = assignedTo.id;
               matchingTicket.imageURL = assignedTo.imageURL;
               matchingTicket.completed = completed;

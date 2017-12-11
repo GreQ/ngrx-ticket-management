@@ -12,6 +12,7 @@ import {EffectsModule} from '@ngrx/effects';
 import {AppComponent} from './app.component';
 import {ROOT_REDUCER} from './state/app.state';
 import {UsersFacade} from './state/users/users.facade';
+import {TicketCreatorComponent} from './tickets/ticket-create/ticket-create.component';
 import {TicketDashboardComponent} from './tickets/ticket-dashboard/ticket-dashboard.component';
 import {TicketListComponent} from './tickets/ticket-list/ticket-list.component';
 import {TicketEditorComponent} from './tickets/ticket-editor/ticket-editor.component';
@@ -32,6 +33,7 @@ import {APP_ROUTES} from './app.routes';
     TicketEditorComponent,
     TicketCardComponent,
     TicketSearchComponent,
+    TicketCreatorComponent,
     TruncatePipe
   ],
   imports: [

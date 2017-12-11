@@ -6,22 +6,25 @@ import {Ticket, User} from '../../models/ticket';
   selector: 'ticket-card',
   styleUrls : [ './ticket-card.component.css'],
   template: `
-      <mat-card class="ticket-card" *ngIf="(ticket$ | async) as ticket">
-        <mat-card-title-group class="fullBleed">
+      <mat-card class="ticket-card" 
+                *ngIf="(ticket$ | async) as ticket">
+        <mat-card-title-group class="fullBleed" 
+                              [ngClass]="{'create':!ticket.id, 'done':ticket.completed}">
           <mat-card-title class="title">
-            Ticket <span style="font-size: 0.8em;">({{status(ticket)}})</span>
+            {{ title(ticket) }}
           </mat-card-title>
         </mat-card-title-group>
         <mat-card-content>
           <div class="avatar-container">
             <img [src]="ticket.imageURL || ''" class="avatar"/>
           </div>
-          <form #editor="ngForm"
+          <form #editor="ngForm" novalidate
                 (ngSubmit)="save.emit(editor.value);" 
                 fxLayout="column">
             <mat-form-field class="userList">
               <mat-select placeholder="Assign to:"
                           name="assigneeId"
+                          [disabled]="ticket.completed"
                           [ngModel]="ticket.assigneeId"
                           (selectionChange)="reassign.emit(editor.value)"
                           name="assigneeId" >
@@ -31,10 +34,16 @@ import {Ticket, User} from '../../models/ticket';
               </mat-select>
             </mat-form-field>
             <mat-form-field>
-              <input matInput placeholder="Title" name="title" [ngModel]="ticket.title">
+              <input matInput placeholder="Title" 
+                     name="title" 
+                     minlength="3" required
+                     [disabled]="ticket.completed"
+                     [ngModel]="ticket.title">
             </mat-form-field>
             <mat-form-field>
-              <textarea rows="6" matInput placeholder="Description" name="description" 
+              <textarea matTextareaAutosize matAutosizeMinRows="2"
+                        [disabled]="ticket.completed"
+                        matInput placeholder="Description" name="description" 
                         [ngModel]="ticket.description"></textarea>
             </mat-form-field>
             <input name="id" [ngModel]="ticket.id" class="hidden">
@@ -43,15 +52,23 @@ import {Ticket, User} from '../../models/ticket';
         <mat-card-actions *ngIf="!ticket.completed">
           <div fxFlex></div>
           <button mat-button type="button" 
+                  *ngIf="ticket.id"
                   title="Mark as Completed"
                   (click)="complete.emit(ticket)">
               Complete
           </button>
           <button mat-button type="button" 
-                  title="Save Ticket"
-                  [disabled]="!editor.dirty"  
+                  title="Add Ticket"
+                  *ngIf="!ticket.id"
+                  [disabled]="!editor.valid || editor.pristine"
                   (click)="save.emit(editor.value)">
               Save
+          </button>
+          <button mat-button type="button" 
+                  title="Cancel"
+                  *ngIf="!ticket.id"
+                  (click)="cancel.emit()">
+              Cancel
           </button>
         </mat-card-actions>  
       </mat-card>
@@ -62,10 +79,13 @@ export class TicketCardComponent {
   @Input() ticket$ : Observable<Ticket>;
 
   @Output() save     = new EventEmitter<Ticket>();
+  @Output() cancel   = new EventEmitter<void>();
   @Output() reassign = new EventEmitter<string>();
   @Output() complete = new EventEmitter<Ticket>();
 
-  status(ticket:Ticket):string {
-    return ticket.completed ? 'finished' : 'pending';
+  title(ticket):string {
+    const status = ticket.completed ? 'Finished' : 'Pending';
+    return !ticket.id ? 'Create New Ticket' : `${status} Ticket `;
   }
+
 }

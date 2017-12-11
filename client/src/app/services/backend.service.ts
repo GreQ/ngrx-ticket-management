@@ -2,13 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/combineLatest';
-import 'rxjs/add/operator/shareReplay';
+import {empty} from 'rxjs/observable/empty';
+import {delay} from 'rxjs/operator/delay';
+import {retryWhen} from 'rxjs/operator/retryWhen';
+import {catchError} from 'rxjs/operators';
 
 import {Ticket, User} from '../models/ticket';
 
@@ -32,7 +29,7 @@ export class BackendService {
     return this.http.get<User>(`/user/${id}`);
   }
 
-  newTicket(payload: {title: string, description?:string}):Observable<Ticket> {
+  newTicket(payload: {title: string, description?:string, assigneeId?:string }):Observable<Ticket> {
     return this.http.post<Ticket>('/api/tickets', payload);
   }
 
@@ -44,6 +41,21 @@ export class BackendService {
     return this.http.post<Ticket>('/api/complete', {ticketId, completed});
   }
 }
+
+/**
+ * Add REST API error retries...
+ */
+// function addRetry(source$:Observable<any>,api:string = ''):Observable<any> {
+//     return source$.pipe(
+//         catchError(err => empty() ),
+//         retryWhen( errors$ => {
+//             return errors$.pipe(
+//                       do( err => console.log(`${api} error = ${err}` ) ),
+//                       delay(1000)
+//                   );
+//         })
+//     )
+// }
 
 /**
  * Inject User link into Tickets [using assigneeId]

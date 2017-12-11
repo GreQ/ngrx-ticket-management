@@ -1,15 +1,22 @@
 import {Component} from '@angular/core';
-
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/combineLatest';
+import {transition, trigger, animate, keyframes, style} from '@angular/animations';
 
 import {Ticket} from '../../models/ticket';
 import {TicketsFacade} from '../../state/tickets/tickets.facade';
-import {UsersFacade} from '../../state/users/users.facade';
 
 @Component({
   selector: 'ticket-list',
   styleUrls : [ './ticket-list.component.css' ],
+  animations : [
+      trigger('state', [
+        transition(':enter', [
+          animate('525ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
+              style({minHeight:'0px', overflow:'hidden', height:'0px', opacity:0 }),
+              style({minHeight:'*', overflow:'inherit', height:'*', opacity: 1})
+           ]))
+        ]),
+      ])
+  ],
   template: `      
     <mat-nav-list>
       <h2 matSubheader> {{pendingOnly ? 'Pending' : 'All' }} Tickets </h2>
@@ -26,6 +33,7 @@ import {UsersFacade} from '../../state/users/users.facade';
       
       <a *ngFor="let ticket of (tickets$ | async); trackBy: trackByFn"
          mat-list-item 
+         @state
          title="{{ticket.title}}"
          [routerLink]="['/ticket', ticket.id]" >
         <img mat-list-avatar class="circle"
