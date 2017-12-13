@@ -1,16 +1,15 @@
-import {animate, keyframes, style, transition, trigger} from '@angular/animations';
+import {animate, style, transition, trigger} from '@angular/animations';
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
-import {users} from '../../../../../server/contacts';
+import 'rxjs/add/observable/of';
+import {delay} from 'rxjs/operators';
 
 import {TicketsFacade} from '../../state/tickets/tickets.facade';
 import {Ticket, User} from '../../models/ticket';
-import 'rxjs/add/observable/of';
 import {UsersFacade} from '../../state/users/users.facade';
-import {updateWithAvatar, updateWithAvatars} from '../../utils/avatars';
+import {updateWithAvatar} from '../../utils/avatars';
 
 @Component({
   selector: 'ticket-creator',
@@ -25,7 +24,8 @@ import {updateWithAvatar, updateWithAvatars} from '../../utils/avatars';
   ],
   template: `      
       <div fxLayout fxLayoutAlign="center center" class="centered" @card>
-        <ticket-card  [ticket$]="ticket$" [users$]="users$" 
+        <ticket-card  [ticket]="ticket" 
+                      [users]="users$ | async" 
                       (save)="save($event)"
                       (reassign)="reassign($event)"
                       (cancel)="cancel($event)" >
@@ -35,7 +35,7 @@ import {updateWithAvatar, updateWithAvatars} from '../../utils/avatars';
 })
 export class TicketCreatorComponent {
   users$  : Observable<User[]> = this.service.users$;
-  ticket$ = this.makeNewTicket();
+  ticket  : Ticket = makeNewTicket();
 
   constructor(
       public service: TicketsFacade,
@@ -44,7 +44,7 @@ export class TicketCreatorComponent {
 
   save(ticket:Ticket) {
     this.service.save(ticket);
-    this.ticket$ = this.makeNewTicket();
+    this.ticket = makeNewTicket();
   }
 
   cancel(ticket:Ticket) {
@@ -57,21 +57,20 @@ export class TicketCreatorComponent {
   reassign(ticket:Ticket) {
     const watch = this.users$.subscribe(users => {
       ticket = updateWithAvatar(ticket, users);
-      this.ticket$ = Observable.of(ticket);
+      this.ticket = ticket;
     });
     watch.unsubscribe();
   }
 
-  private makeNewTicket():Observable<Ticket> {
-    return Observable.of( {
-              id : '',
-              title : '',
-              description : '',
-              assigneeId : '',
-              completed : false,
-              imageURL : '/assets/todoAvatar.png'
-           } as Ticket);
-  }
 }
 
-
+function makeNewTicket():Ticket {
+  return {
+        id : '',
+        title : '',
+        description : '',
+        assigneeId : '',
+        completed : false,
+        imageURL : '/assets/todoAvatar.png'
+  };
+}

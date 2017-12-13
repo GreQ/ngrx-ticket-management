@@ -5,10 +5,10 @@ import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { map, merge } from 'rxjs/operators';
+import {Subscription} from 'rxjs/Subscription';
 
 import {TicketsFacade} from '../../state/tickets/tickets.facade';
 import {Ticket, User} from '../../models/ticket';
-import {updateWithAvatar} from '../../utils/avatars';
 
 @Component({
   selector: 'ticket-editor',
@@ -23,7 +23,8 @@ import {updateWithAvatar} from '../../utils/avatars';
   ],
   template: `      
       <div fxLayout fxLayoutAlign="center center" class="centered" @card>
-        <ticket-card  [ticket$]="ticket$" [users$]="users$" 
+        <ticket-card  [ticket]="ticket" 
+                      [users]="users$ | async" 
                       (save)="service.save($event)"
                       (complete)="service.close($event)"
                       (reassign)="service.assign($event)" >
@@ -36,12 +37,18 @@ import {updateWithAvatar} from '../../utils/avatars';
 })
 export class TicketEditorComponent {
   users$  : Observable<User[]> = this.service.users$;
-  ticket$ : Observable<Ticket> = this.service.selectedTicket$;
+  ticket  : Ticket;
 
   constructor(public service: TicketsFacade, public route:ActivatedRoute) {
+    this.watch = this.service.selectedTicket$.subscribe(ticket => this.ticket = ticket);
     makeTicketID$(route).subscribe(ticketId => this.service.select(ticketId));
   }
 
+  ngOnDestroy() {
+    this.watch.unsubscribe();
+  }
+
+  private watch : Subscription;
 }
 
 

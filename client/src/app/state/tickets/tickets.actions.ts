@@ -1,11 +1,6 @@
 import {Action} from '@ngrx/store';
 import {Ticket} from '../../models/ticket';
 
-  export type TicketAction = {
-    type : string,
-    data?: any
-  };
-
   export const enum TicketActionTypes {
     ACTIVITY = '[tickets] activity',
     FILTER   = '[tickets] filter',
@@ -21,7 +16,7 @@ import {Ticket} from '../../models/ticket';
   }
 
 
-  export class TicketsFilter {
+  export class TicketFilterOptions {
     constructor (public filterBy : string, public showAll = true){ }
   }
 
@@ -31,11 +26,12 @@ import {Ticket} from '../../models/ticket';
 
   export class LoadAllTicketsAction implements Action {
     readonly type = TicketActionTypes.LOADALL;
+    readonly data = null;
   }
 
   export class FilterTicketsAction implements Action {
     readonly type = TicketActionTypes.FILTER;
-    constructor(public data: TicketsFilter) { }
+    constructor(public data: TicketFilterOptions) { }
   }
 
   export class CompleteTicketAction implements Action {
@@ -72,8 +68,21 @@ import {Ticket} from '../../models/ticket';
     constructor(public data: Ticket) { }
   }
 
-  export class TicketSelectedAction implements Action {
+  export class SelectTicketAction implements Action {
     readonly type = TicketActionTypes.SELECTED;
     constructor(public data: string) { }
   }
+
+export type TicketAction =
+    // Request Actions
+    FilterTicketsAction  | TicketsProcessingAction |
+    // Event Actions
+    LoadAllTicketsAction | SaveTicketAction        |
+    SelectTicketAction   | AssignUserAction        | CompleteTicketAction |
+    // Document Actions
+    TicketsLoadedAction  | TicketSavedAction;
+
+
+
+
 

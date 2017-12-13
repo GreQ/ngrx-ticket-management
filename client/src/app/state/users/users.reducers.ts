@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { ApplicationState } from "../app.state";
 
 import {User} from '../../models/ticket';
-import {UsersAction, UsersActionTypes } from './users.actions';
+import {UserActions, UsersActionTypes } from './users.actions';
 
 
 export interface UsersState {
@@ -21,10 +21,10 @@ const INITAL_STATE: UsersState = {
 // Real Reducer
 // ***************************************************************
 
-export function usersReducer(state:UsersState = INITAL_STATE, action: UsersAction): UsersState {
+export function usersReducer(state:UsersState = INITAL_STATE, action: UserActions): UsersState {
   switch(action.type) {
     case UsersActionTypes.USERS :
-      const list = action.data as User[ ];
+      const list = action.data;
       const loaded = true;
 
       state = {...state, list, loaded };

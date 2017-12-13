@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {transition, trigger, animate, keyframes, style} from '@angular/animations';
+import {transition, trigger, animate, keyframes, style, query} from '@angular/animations';
 
 import {Ticket} from '../../models/ticket';
 import {TicketsFacade} from '../../state/tickets/tickets.facade';
@@ -8,17 +8,28 @@ import {TicketsFacade} from '../../state/tickets/tickets.facade';
   selector: 'ticket-list',
   styleUrls : [ './ticket-list.component.css' ],
   animations : [
-      trigger('state', [
+      trigger('row', [
         transition(':enter', [
           animate('525ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
               style({minHeight:'0px', overflow:'hidden', height:'0px', opacity:0 }),
               style({minHeight:'*', overflow:'inherit', height:'*', opacity: 1})
            ]))
         ]),
-      ])
+      ]),
+    trigger('listChange', [
+      transition(':increment', [
+        query(':enter',[
+          animate('525ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
+              style({minHeight:'0px', overflow:'hidden', height:'0px', opacity:0 }),
+              style({minHeight:'*', overflow:'inherit', height:'*', opacity: 1})
+           ]))
+        ]),
+      ]),
+    ])
+
   ],
   template: `      
-    <mat-nav-list>
+    <mat-nav-list [@listChange]="numTickets">
       <h2 matSubheader> {{pendingOnly ? 'Pending' : 'All' }} Tickets </h2>
       <mat-slide-toggle 
           [checked]="showAll" 
@@ -33,7 +44,7 @@ import {TicketsFacade} from '../../state/tickets/tickets.facade';
       
       <a *ngFor="let ticket of (tickets$ | async); trackBy: trackByFn"
          mat-list-item 
-         @state
+         @row
          title="{{ticket.title}}"
          [routerLink]="['/ticket', ticket.id]" >
         <img mat-list-avatar class="circle"
@@ -51,9 +62,15 @@ import {TicketsFacade} from '../../state/tickets/tickets.facade';
 export class TicketListComponent {
   showAll          = true;
   searchCriteria   = '';
+  numTickets       = 0;
   tickets$         = this.srvTickets.filteredTickets$;
 
-  constructor(private srvTickets:TicketsFacade){ }
+
+  constructor(private srvTickets:TicketsFacade){
+     this.tickets$.subscribe(tickets => {
+       this.numTickets = tickets.length
+     });
+  }
 
   trackByFn(ticket:Ticket)        { return ticket.id;  }
   toggleShowAll(showAll:boolean)  { this.showAll = showAll;         this.updateFilters();  }

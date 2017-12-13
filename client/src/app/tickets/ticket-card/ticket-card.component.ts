@@ -1,13 +1,12 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Ticket, User} from '../../models/ticket';
 
 @Component({
   selector: 'ticket-card',
   styleUrls : [ './ticket-card.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-      <mat-card class="ticket-card" 
-                *ngIf="(ticket$ | async) as ticket">
+      <mat-card class="ticket-card" *ngIf="ticket">
         <mat-card-title-group class="fullBleed" 
                               [ngClass]="{'create':!ticket.id, 'done':ticket.completed}">
           <mat-card-title class="title">
@@ -28,7 +27,7 @@ import {Ticket, User} from '../../models/ticket';
                           [ngModel]="ticket.assigneeId"
                           (selectionChange)="reassign.emit(editor.value)"
                           name="assigneeId" >
-                <mat-option *ngFor="let it of (users$ | async)" [value]="it.id">
+                <mat-option *ngFor="let it of users" [value]="it.id">
                   {{ it.name }}
                 </mat-option>
               </mat-select>
@@ -75,8 +74,8 @@ import {Ticket, User} from '../../models/ticket';
    `
 })
 export class TicketCardComponent {
-  @Input() users$  : Observable<User[]>;
-  @Input() ticket$ : Observable<Ticket>;
+  @Input() users     : User[];
+  @Input() ticket    : Ticket;
 
   @Output() save     = new EventEmitter<Ticket>();
   @Output() cancel   = new EventEmitter<void>();

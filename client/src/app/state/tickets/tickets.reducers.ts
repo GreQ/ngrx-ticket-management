@@ -4,12 +4,12 @@ import {ApplicationState} from '../app.state';
 import {isArray} from 'rxjs/util/isArray';
 import {Ticket} from '../../models/ticket';
 
-import {TicketAction, TicketActionTypes, TicketsFilter} from './tickets.actions';
+import {TicketAction, TicketActionTypes, TicketFilterOptions} from './tickets.actions';
 
 
 export interface TicketsState {
   list              : Array<Ticket>;
-  filterCriteria    : TicketsFilter;
+  filterCriteria    : TicketFilterOptions;
   selectedTicketId  : string | null;
   loaded            : boolean;
   processing        : number;
@@ -42,7 +42,7 @@ export function ticketsReducer(state:TicketsState = INITAL_STATE, action: Ticket
       break;
 
     case TicketActionTypes.FILTER:
-      state = {...state,  filterCriteria : action.data as TicketsFilter};
+      state = {...state,  filterCriteria : action.data};
       break;
 
     case TicketActionTypes.LOADED :
@@ -97,7 +97,7 @@ export namespace TicketsQuery {
  * @param list
  * @param filter
  */
-export function applyTicketFilters(filters:TicketsFilter, list:Ticket[]):Ticket[] {
+export function applyTicketFilters(filters:TicketFilterOptions, list:Ticket[]):Ticket[] {
   return list
     .filter(it => matchesCriteria(filters.filterBy,it))
     .filter( filters.showAll ? showAll : notCompleted );

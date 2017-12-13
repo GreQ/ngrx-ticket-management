@@ -5,33 +5,26 @@ import { Actions, Effect, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 
 import {Observable} from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { map, switchMap, concat, withLatestFrom, mergeMap } from 'rxjs/operators';
-import {updateWithAvatars} from '../../utils/avatars';
+import 'rxjs/add/observable/forkJoin';
+import { map, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
 
 import {NoopAction} from '../app.actions';
 import {ApplicationState} from '../app.state';
 import {UsersFacade} from '../users/users.facade';
 import {BackendService} from '../../services/backend.service';
 import {Ticket} from '../../models/ticket';
-import {
-  TicketAction, TicketActionTypes, TicketSelectedAction,
-  TicketsProcessingAction
-} from './tickets.actions';
+import {TicketAction, TicketActionTypes } from './tickets.actions';
 import {TicketsQuery} from './tickets.reducers';
-import {
-  FilterTicketsAction,
-  LoadAllTicketsAction,
-  SaveTicketAction,
-  AssignUserAction,
-  CompleteTicketAction,
-  TicketsLoadedAction,
-  TicketSavedAction,
-} from './tickets.actions';
-import 'rxjs/add/operator/concat';
-import 'rxjs/add/observable/forkJoin';
+import {TicketsLoadedAction, TicketSavedAction} from './tickets.actions';
+import {LoadAllTicketsAction, SaveTicketAction} from './tickets.actions';
+import {AssignUserAction, CompleteTicketAction} from './tickets.actions';
+import {SelectTicketAction, TicketsProcessingAction, FilterTicketsAction} from './tickets.actions';
 
+import {updateWithAvatars} from '../../utils/avatars';
 
-
+/**
+ *
+ */
 @Injectable()
 export class TicketsFacade {
   users$           = this.users.allUsers$;
@@ -49,59 +42,43 @@ export class TicketsFacade {
       private backend : BackendService) {
   }
 
-  // ************************************************
-  // Public Code (Action Creators)
-  // ************************************************
-
   // ***************************************************************
-  // Dispatch Actions
+  // Public Methods (... that internally dispatch Actions to store)
   // ***************************************************************
 
+  select(ticketId:string) { this.store.dispatch(new SelectTicketAction(ticketId));    }
   filter(filterBy:string, showAll=true)       {
     this.store.dispatch(new FilterTicketsAction({filterBy, showAll} ));
   }
 
-  select(ticketId:string) { this.store.dispatch(new TicketSelectedAction(ticketId));  }
-  loadAll()            { this.store.dispatch(new LoadAllTicketsAction());             }
-  add(title:string)    { this.store.dispatch(new SaveTicketAction({title}));    }
-  close(ticket:Ticket) { this.store.dispatch(new CompleteTicketAction(ticket));       }
-  save(ticket:Ticket)  { this.store.dispatch(new SaveTicketAction(ticket));           }
-  assign(ticket:Ticket){ this.store.dispatch(new AssignUserAction(ticket));           }
-
-  // ***************************************************************
-  // Public API
-  // ***************************************************************
-
-  /**
-   * Dispatch load request action and return observable to filtered list
-   */
-  getTickets(): Observable<Ticket[]> {
-      this.loadAll();
-      return this.filteredTickets$;
-    }
+  loadAll()               { this.store.dispatch(new LoadAllTicketsAction());          }
+  save(ticket:Ticket)     { this.store.dispatch(new SaveTicketAction(ticket));        }
+  add(title:string)       { this.store.dispatch(new SaveTicketAction({title})); }
+  assign(ticket:Ticket)   { this.store.dispatch(new AssignUserAction(ticket));        }
+  close(ticket:Ticket)    { this.store.dispatch(new CompleteTicketAction(ticket));    }
 
   // ***************************************************************
   // Private Queries
   // ***************************************************************
 
-  private loaded$          = this.store.select(TicketsQuery.getLoaded);
+  /**
+   * Used to internal throttle the LoadAllTickets requests
+   */
+  private loaded$       = this.store.select(TicketsQuery.getLoaded);
+
+  /**
+   * Lettable operator to announce start/stop of async action...
+   */
+  private trackActivity = this.trackProcess(this.store).bind(this);
+
 
   // ***************************************************************
   // Effect Models
   // ***************************************************************
 
   @Effect()
-  autoLoadAllEffect$ = this.actions$
-    .ofType(ROOT_EFFECTS_INIT)
-    .pipe(
-      mergeMap(_ => [
-          new LoadAllTicketsAction()
-      ])
-    );
-
-  @Effect()
   loadAllEffect$ = this.actions$
-    .ofType(TicketActionTypes.LOADALL)
+    .ofType(ROOT_EFFECTS_INIT, TicketActionTypes.LOADALL)
     .pipe(
         withLatestFrom(this.loaded$),
         switchMap(([_, loaded]) => {
@@ -117,15 +94,15 @@ export class TicketsFacade {
         })
     );
 
-
   @Effect()
   saveEffect$ = this.actions$
     .ofType(TicketActionTypes.SAVE)
     .pipe(
       map( toTicket ),
-      switchMap(ticket => this.process(
-          this.backend.newTicket(ticket)
-      )),
+      concatMap(ticket => this.backend
+        .newTicket(ticket)
+        .pipe( this.trackActivity )
+      ),
       map((ticket:Ticket) => new TicketSavedAction(ticket))
     );
 
@@ -134,9 +111,10 @@ export class TicketsFacade {
     .ofType(TicketActionTypes.COMPLETE)
     .pipe(
       map(toTicket),
-      switchMap(ticket => this.process(
-          this.backend.complete(ticket.id, true)
-      )),
+      concatMap(ticket => this.backend
+        .complete(ticket.id, true)
+        .pipe( this.trackActivity )
+      ),
       map((ticket:Ticket) => new TicketSavedAction(ticket))
     );
 
@@ -145,9 +123,10 @@ export class TicketsFacade {
     .ofType(TicketActionTypes.CREATE)
     .pipe(
       map(toTicket),
-      switchMap(ticket => this.process(
-          this.backend.newTicket(ticket)
-      )),
+      concatMap(ticket => this.backend
+        .newTicket(ticket)
+        .pipe( this.trackActivity )
+      ),
       map((ticket:Ticket) => new TicketSavedAction(ticket))
     );
 
@@ -156,38 +135,43 @@ export class TicketsFacade {
     .ofType(TicketActionTypes.ASSIGN)
     .pipe(
       map(toTicket),
-      switchMap(({id, assigneeId}) => this.process(
-          this.backend.assign(id, assigneeId)
-      )),
+      concatMap(({id, assigneeId}) => this.backend
+        .assign(id, assigneeId)
+        .pipe( this.trackActivity )
+      ),
       map((ticket:Ticket) => new TicketSavedAction(ticket))
     );
+
+  // ***************************************************************
+  // Lettable Operator Factory
+  // ***************************************************************
 
   /**
    * Proxy target observable to add pre- and post- processing event
    * notifications...
    */
-  private process(target$:Observable<any>):Observable<any> {
-    const action = (val) => new TicketsProcessingAction(val);
-    const start  = () => this.store.dispatch( action(true)  );
-    const stop   = () => this.store.dispatch( action(false) );
+  private trackProcess(store:Store<ApplicationState>) {
+    return (target$:Observable<any>):Observable<any> => {
+      const action = (val) => new TicketsProcessingAction(val);
+      const start  = () => store.dispatch( action(true)  );
+      const stop   = () => store.dispatch( action(false) );
 
-    return Observable.create(obsrv => {
-      start();
-      const watch = target$.subscribe(resp => {
-                      obsrv.next(resp);
-                      obsrv.complete();
-                      stop();
-                    },() => stop());
+      return Observable.create(obsrv => {
+        start();
+        const watch = target$.subscribe(resp => {
+                        obsrv.next(resp);
+                        obsrv.complete();
+                        stop();
+                      },() => stop());
 
-      return () => watch.unsubscribe();
-    })
+        return () => watch.unsubscribe();
+      })
+    }
   }
 
 }
 
-const toTicket   = (action:TicketAction):Ticket => action.data as Ticket;
-const ofType     = (type:string) => (action): boolean => action.type == type;
-
+const toTicket   = (action:TicketAction):Ticket => action.data;
 
 
 
