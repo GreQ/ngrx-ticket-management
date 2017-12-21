@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core';
 
 import { Store } from '@ngrx/store';
-import {Actions, Effect, ROOT_EFFECTS_INIT} from '@ngrx/effects';
+import {Actions, Effect} from '@ngrx/effects';
 
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { map, switchMap, withLatestFrom, reduce} from 'rxjs/operators';
-import {users} from '../../../../../server/contacts';
+import { switchMap, withLatestFrom, reduce, tap } from 'rxjs/operators';
 
-import {NoopAction} from '../app.actions';
 import {ApplicationState} from '../app.state';
-import {LoadAllTicketsAction} from '../tickets/tickets.actions';
-import {LoadAllUsersAction} from './users.actions';
 
 import {UsersQuery} from './users.reducers';
-import {Ticket, User} from '../../models/ticket';
+import {User} from '../../models/ticket';
 import {UsersActionTypes, UsersLoadedAction} from './users.actions';
 import {BackendService} from '../../services/backend.service';
 
@@ -37,11 +33,12 @@ export class UsersFacade {
    * and UsersActionTypes.LOADALL
    */
   getUsers(): Observable<User[]> {
-    return this.backend.users()
-        .do(users => {
-          const usersLoaded = new UsersLoadedAction(users)
+    return this.backend.users().pipe(
+        tap(users => {
+          const usersLoaded = new UsersLoadedAction(users);
           this.store.dispatch(usersLoaded);
-        });
+        })
+    );
   }
 
   /**

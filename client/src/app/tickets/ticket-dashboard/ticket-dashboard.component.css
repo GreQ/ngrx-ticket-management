@@ -8,6 +8,8 @@
 
 .mat-drawer {
   width: 340px !important;
+  background-color: #fff;
+  background-image: linear-gradient( #c7cffb14, #7f8bd1c9 );
 }
 
 .mat-drawer-content {
@@ -19,17 +21,10 @@
 }
 
 .centered {
-  height: 75vh;
+  height: 93vh;
 }
 
-.copyright {
-  font-size: 0.75em;
-  position: absolute;
-  right: 36%;
-  bottom: 30px;
-  color:dimgray;
-  pointer-events: none;
-}
+
 
 .nrwl {
   position: absolute;

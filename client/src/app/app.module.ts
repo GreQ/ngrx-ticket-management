@@ -3,7 +3,9 @@ import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import {RouterModule} from '@angular/router';
+import {environment} from '../environments/environment';
 import {MaterialModule} from './material.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {StoreModule} from '@ngrx/store';
@@ -14,6 +16,7 @@ import {ROOT_REDUCER} from './state/app.state';
 import {UsersFacade} from './state/users/users.facade';
 import {TicketCreatorComponent} from './tickets/ticket-create/ticket-create.component';
 import {TicketDashboardComponent} from './tickets/ticket-dashboard/ticket-dashboard.component';
+import {TicketGridComponent} from './tickets/ticket-grid/ticket-grid.component';
 import {TicketListComponent} from './tickets/ticket-list/ticket-list.component';
 import {TicketEditorComponent} from './tickets/ticket-editor/ticket-editor.component';
 import {TicketCardComponent} from './tickets/ticket-card/ticket-card.component';
@@ -30,6 +33,7 @@ import {APP_ROUTES} from './app.routes';
     AppComponent,
     TicketDashboardComponent,
     TicketListComponent,
+    TicketGridComponent,
     TicketEditorComponent,
     TicketCardComponent,
     TicketSearchComponent,
@@ -39,6 +43,9 @@ import {APP_ROUTES} from './app.routes';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', {
+      enabled: environment.production
+    }),
     FormsModule,
     HttpClientModule,
     MaterialModule,

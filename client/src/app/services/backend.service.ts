@@ -2,43 +2,40 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import {empty} from 'rxjs/observable/empty';
-import {delay} from 'rxjs/operator/delay';
-import {retryWhen} from 'rxjs/operator/retryWhen';
-import {catchError} from 'rxjs/operators';
-
 import {Ticket, User} from '../models/ticket';
+
+const ROOT_URL = 'http://localhost:3000';
 
 @Injectable()
 export class BackendService {
   constructor(private http: HttpClient) { }
 
   tickets():Observable<Ticket[]> {
-    return this.http.get<Ticket[]>('/api/tickets');
+    return this.http.get<Ticket[]>(`${ROOT_URL}/api/tickets`);
   }
 
   ticket(id: string) {
-    return this.http.get<Ticket>(`/api/ticket/${id}`);
+    return this.http.get<Ticket>(`${ROOT_URL}/api/ticket/${id}`);
   }
 
   users():Observable<Array<User>> {
-    return this.http.get<User[]>('/api/users');
+    return this.http.get<User[]>(`${ROOT_URL}/api/users`);
   }
 
   user(id: string) {
-    return this.http.get<User>(`/user/${id}`);
+    return this.http.get<User>(`${ROOT_URL}/user/${id}`);
   }
 
   newTicket(payload: {title: string, description?:string, assigneeId?:string }):Observable<Ticket> {
-    return this.http.post<Ticket>('/api/tickets', payload);
+    return this.http.post<Ticket>(`${ROOT_URL}/api/tickets`, payload);
   }
 
   assign(ticketId: string, assigneeId: string) {
-    return this.http.post<Ticket>('/api/assign', {ticketId, assigneeId});
+    return this.http.post<Ticket>(`${ROOT_URL}/api/assign`, {ticketId, assigneeId});
   }
 
   complete(ticketId: string, completed: boolean = true):Observable<Ticket> {
-    return this.http.post<Ticket>('/api/complete', {ticketId, completed});
+    return this.http.post<Ticket>(`${ROOT_URL}/api/complete`, {ticketId, completed});
   }
 }
 

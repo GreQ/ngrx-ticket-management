@@ -14,9 +14,6 @@ import {Ticket, User} from '../../models/ticket';
           </mat-card-title>
         </mat-card-title-group>
         <mat-card-content>
-          <div class="avatar-container">
-            <img [src]="ticket.imageURL || ''" class="avatar"/>
-          </div>
           <form #editor="ngForm" novalidate
                 (ngSubmit)="save.emit(editor.value);" 
                 fxLayout="column">
@@ -31,6 +28,9 @@ import {Ticket, User} from '../../models/ticket';
                   {{ it.name }}
                 </mat-option>
               </mat-select>
+              <div class="avatar-container">
+                <img [src]="ticket.imageURL || ''" class="avatar"/>
+              </div>
             </mat-form-field>
             <mat-form-field>
               <input matInput placeholder="Title" 

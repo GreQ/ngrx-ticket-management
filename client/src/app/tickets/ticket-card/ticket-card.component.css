@@ -37,6 +37,7 @@ mat-card-title-group.fullBleed.done {
 
 .avatar-container {
   position: absolute;
+  z-index: 900  ;
   border-radius: 50%;
   overflow: hidden;
   height: 130px;
@@ -46,8 +47,8 @@ mat-card-title-group.fullBleed.done {
   border: none;
   cursor: pointer;
   border: 5px solid #a5a5a5;
-  right: 40px;
-  top: 20px;
+  right: -150px;
+    top: -60px;
 }
 
 .avatar {
@@ -73,9 +74,10 @@ img.avatar {
 }
 
 .userList {
-  width: 65%;
+  width:75%;
 }
 
 .hidden {
   display:none;
 }
+

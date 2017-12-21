@@ -30,7 +30,7 @@ import {TicketsFacade} from '../../state/tickets/tickets.facade';
   ],
   template: `      
     <mat-nav-list [@listChange]="numTickets">
-      <h2 matSubheader> {{pendingOnly ? 'Pending' : 'All' }} Tickets </h2>
+      <h2 matSubheader> {{showAll ? 'All': 'Pending' }} Tickets </h2>
       <mat-slide-toggle 
           [checked]="showAll" 
           (change)="toggleShowAll($event.checked)">
@@ -57,6 +57,7 @@ import {TicketsFacade} from '../../state/tickets/tickets.facade';
       </a>
       
     </mat-nav-list>
+    <p class="copyright">Copyright 2017, All Rights Reserved - Nrwl, Inc.</p>
    `
 })
 export class TicketListComponent {

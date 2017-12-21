@@ -8,12 +8,17 @@
 }
 
 .centered {
-  height: 75vh;
+  height: 93vh;
+  background: url('/assets/astronaut.jpg');
 }
 
 
+
 ticket-card {
-  width:60%
+  width: 80%;
+    margin-bottom: 15%;
+    max-width: 600px;
+    min-width: 405px;
 }
 
 

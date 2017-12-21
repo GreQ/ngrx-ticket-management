@@ -5,8 +5,8 @@ import { Actions, Effect, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 
 import {Observable} from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import 'rxjs/add/observable/forkJoin';
-import { map, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { map, switchMap, concatMap, withLatestFrom} from 'rxjs/operators';
 
 import {NoopAction} from '../app.actions';
 import {ApplicationState} from '../app.state';
@@ -67,9 +67,12 @@ export class TicketsFacade {
   private loaded$       = this.store.select(TicketsQuery.getLoaded);
 
   /**
-   * Lettable operator to announce start/stop of async action...
+   * HOF used to build lettable operator to announce start/stop of async action...
    */
-  private trackActivity = this.trackProcess(this.store).bind(this);
+  private trackActivity = this.trackProcess({
+    start : () => this.store.dispatch( new TicketsProcessingAction(true)),
+    stop  : () => this.store.dispatch( new TicketsProcessingAction(false)),
+  });
 
 
   // ***************************************************************
@@ -83,7 +86,7 @@ export class TicketsFacade {
         withLatestFrom(this.loaded$),
         switchMap(([_, loaded]) => {
           return loaded ? of([null, null]) :
-                 Observable.forkJoin(this.backend.tickets(), this.users.getUsers());
+                 forkJoin(this.backend.tickets(), this.users.getUsers());
         }),
         map( ([tickets, users]) => {
           if ( tickets ) {
@@ -150,12 +153,8 @@ export class TicketsFacade {
    * Proxy target observable to add pre- and post- processing event
    * notifications...
    */
-  private trackProcess(store:Store<ApplicationState>) {
+  private trackProcess({start, stop}) {
     return (target$:Observable<any>):Observable<any> => {
-      const action = (val) => new TicketsProcessingAction(val);
-      const start  = () => store.dispatch( action(true)  );
-      const stop   = () => store.dispatch( action(false) );
-
       return Observable.create(obsrv => {
         start();
         const watch = target$.subscribe(resp => {

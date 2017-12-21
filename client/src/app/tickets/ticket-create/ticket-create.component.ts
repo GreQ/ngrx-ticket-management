@@ -3,8 +3,6 @@ import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import {delay} from 'rxjs/operators';
 
 import {TicketsFacade} from '../../state/tickets/tickets.facade';
 import {Ticket, User} from '../../models/ticket';
