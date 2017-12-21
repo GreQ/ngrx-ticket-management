@@ -1,18 +1,22 @@
+
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {tap} from 'rxjs/operators';
 import {Subject} from 'rxjs/Subject';
+import {tap} from 'rxjs/operators';
+
 import {Ticket} from '../models/ticket';
 import {Backend} from './backend.service';
 
-export class TicketsService {
+@Injectable()
+export class TicketsFacade {
   tickets$   : Subject<Ticket[]> = new Subject<Ticket[]>();
-  allTickets : Ticket[] = [];   // all known tickets
-  filter     : string   = "";   // filter criteria
+  allTickets : Ticket[]          = [];   // all known tickets
+  filter     : string            = "";   // filter criteria
 
   constructor(private backend: Backend) {
     backend.tickets().subscribe((list:Ticket[]) => {
       this.allTickets = list;
-      this.announceChanges();
+      this.processChanges();
     });
   }
 
@@ -20,7 +24,7 @@ export class TicketsService {
     return this.backend.tickets().pipe(
       tap( list => {
         this.allTickets = list;
-        this.announceChanges();
+        this.processChanges();
       })
     );
   }
@@ -28,7 +32,7 @@ export class TicketsService {
 
   applyFilter(criteria:string) {
     this.filter = criteria;
-    this.announceChanges();
+    this.processChanges();
   }
 
   addTicket(title:string) {
@@ -36,21 +40,21 @@ export class TicketsService {
       .newTicket( {title} )
       .subscribe((ticket:Ticket) => {
         this.allTickets = addTicket(ticket, this.allTickets);
-        this.announceChanges();
+        this.processChanges();
       });
   }
 
-  doComplete(ticket:Ticket) {
+  markAsComplete(ticket:Ticket) {
     this.backend
       .complete(ticket.id, true)
       .subscribe((ticket:Ticket) => {
         this.allTickets = addTicket(ticket, this.allTickets);
-        this.announceChanges();
+        this.processChanges();
       })
   }
 
 
-  private announceChanges() {
+  private processChanges() {
     this.tickets$.next(
         applyFilters(this.filter, this.allTickets)
     );

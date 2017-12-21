@@ -5,6 +5,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from './material.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import {TicketsFacade} from './services/tickets.facade';
 
 import {TruncatePipe} from './utils/truncate';
 import {Backend} from './services/backend.service';
@@ -24,7 +25,7 @@ import {AppComponent} from './app.component';
     MaterialModule,
     FlexLayoutModule,
   ],
-  providers: [Backend],
+  providers: [Backend, TicketsFacade],
   bootstrap: [AppComponent]
 })
 export class AppModule {  }
