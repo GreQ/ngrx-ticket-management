@@ -3,9 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import {RouterModule} from '@angular/router';
-import {environment} from '../environments/environment';
 import {MaterialModule} from './material.module';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {StoreModule} from '@ngrx/store';
@@ -43,9 +41,6 @@ import {APP_ROUTES} from './app.routes';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', {
-      enabled: environment.production
-    }),
     FormsModule,
     HttpClientModule,
     MaterialModule,

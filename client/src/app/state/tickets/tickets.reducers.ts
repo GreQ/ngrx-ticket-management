@@ -1,66 +1,45 @@
 import {createSelector} from '@ngrx/store';
-import {ApplicationState} from '../app.state';
+import { createEntityAdapter, EntityState, EntityAdapter } from '@ngrx/entity';
 
-import {isArray} from 'rxjs/util/isArray';
 import {Ticket} from '../../models/ticket';
-
 import {TicketAction, TicketActionTypes, TicketFilterOptions} from './tickets.actions';
 
+import {ApplicationState} from '../app.state';
 
-export interface TicketsState {
+export interface TicketsState extends EntityState<Ticket> {
   list              : Array<Ticket>;
   filterCriteria    : TicketFilterOptions;
   selectedTicketId  : string | null;
   loaded            : boolean;
   processing        : number;
 }
+export const ticketAdapter: EntityAdapter<Ticket> = createEntityAdapter<Ticket>({
+  selectId: (ticket: Ticket) => ticket.id,
+  sortComparer: false,
+});
 
-const INITAL_STATE: TicketsState = {
+
+const INITAL_STATE: TicketsState = ticketAdapter.getInitialState({
   list              : [ ],
   filterCriteria    : { filterBy: '', showAll:true},
   selectedTicketId  : null,
   loaded            : false,
   processing        : 0
-};
+});
 
 // ***************************************************************
 // Real Reducer
 // ***************************************************************
 
 export function ticketsReducer(state:TicketsState = INITAL_STATE, action: TicketAction): TicketsState {
-  let list;
+  const  process = (state, isProcessing) => state.processing + (isProcessing ? 1 : -1);
 
   switch(action.type) {
-    case TicketActionTypes.ACTIVITY :
-      const processing = state.processing + (!!action.data ? 1 : -1);
-      state = {...state,  processing};
-      break;
-
-    case TicketActionTypes.SELECTED:
-      const selectedTicketId = action.data;
-      state = {...state,  selectedTicketId };
-      break;
-
-    case TicketActionTypes.FILTER:
-      state = {...state,  filterCriteria : action.data};
-      break;
-
-    case TicketActionTypes.LOADED :
-      const loaded = true;
-      list = action.data as Ticket[];
-
-      state = {...state, list };
-      break;
-
-    case TicketActionTypes.SAVED :
-      const items = [action.data];
-
-      list = items.reduce((acc, it)=> {
-          return addTicket(it, acc);
-      },state.list);
-
-      state = {...state,  list, loaded };
-      break;
+    case TicketActionTypes.ACTIVITY :   return {...state,  processing : process(state, !!action.data)};
+    case TicketActionTypes.SELECTED:    return {...state,  selectedTicketId : action.data     };
+    case TicketActionTypes.FILTER:      return {...state,  filterCriteria : action.data       };
+    case TicketActionTypes.LOADED :     return {...ticketAdapter.addMany(action.data,state)   };
+    case TicketActionTypes.SAVED :      return { ...ticketAdapter.addOne(action.data, state)  };
   }
 
   return state;
@@ -107,19 +86,6 @@ const showAll = (it => it);
 const notCompleted = (t:Ticket):boolean => (t.completed !== true);
 
 
-/**
- * Add ticket to existing list. If already existing,
- * overwrite with new values. Maintain ticket order.
- */
-function addTicket(ticket:Ticket, list:Ticket[]):Ticket[] {
-  const found = findExisting(ticket, list);
-  const result = !!found ? list.map(it => {
-      return (it.id == ticket.id) ? {...it, ...ticket} : it;
-  }) : list.concat(ticket);
-
-  return result;
-}
-
 
 
 // ***************************************************************
@@ -138,11 +104,3 @@ function matchesCriteria(criteria:string, ticket:Ticket):boolean {
   return title.includes(criteria) || description.includes(criteria);
 }
 
-/**
- * Find existing ticket (if present)
- */
-function findExisting(ticket:Ticket, buffer:Ticket[]):Ticket {
-  return buffer.reduce((prev, curr):Ticket=> {
-    return prev ? prev : ((curr.id == ticket.id) ? curr : null);
-  }, null);
-}

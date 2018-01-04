@@ -3,7 +3,8 @@
 Let's build a ticket managing application, where the user can add, filter, assign, and complete tickets.
 
 
-![nrwlticketapp](https://user-images.githubusercontent.com/210413/33800318-f89a17aa-dd02-11e7-9321-859df74dc125.jpg)
+![ticketgrid](https://user-images.githubusercontent.com/210413/34574168-3164dd48-f13c-11e7-8146-828636056997.jpg)
+
 
 ### Starting an App
 
