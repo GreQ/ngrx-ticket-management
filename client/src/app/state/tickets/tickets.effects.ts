@@ -6,21 +6,19 @@ import { Actions, Effect, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { map, switchMap, concatMap, withLatestFrom, tap } from 'rxjs/operators';
+import { map, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
 
-import { User } from '../../models/ticket';
 import { NoopAction } from '../app.actions';
+import { ApplicationState } from '../app.state';
+import { BackendService } from '../../services/backend.service';
 import { Ticket } from '../../models/ticket';
-import { UsersLoadedAction } from '../users/users.actions';
+import { UsersFacade } from '../users/users.facade';
 import { TicketAction, TicketActionTypes } from './tickets.actions';
 import { TicketsQuery } from './tickets.reducers';
 import { TicketsLoadedAction, TicketSavedAction } from './tickets.actions';
 import { TicketsProcessingAction } from './tickets.actions';
 
 import { updateWithAvatars } from '../../utils/avatars';
-
-import { ApplicationState } from '../app.state';
-import { BackendService } from '../../services/backend.service';
 
 @Injectable()
 export class TicketsEffects {
@@ -37,7 +35,7 @@ export class TicketsEffects {
       switchMap(([_, loaded]) => {
         return loaded
           ? of([null, null])
-          : forkJoin(this.backend.tickets(), this.getUsers());
+          : forkJoin(this.backend.tickets(), this.users.getUsers());
       }),
       map(([tickets, users]) => {
         if (tickets) {
@@ -95,7 +93,8 @@ export class TicketsEffects {
   constructor(
     private actions$: Actions,
     private store: Store<ApplicationState>,
-    private backend: BackendService
+    private backend: BackendService,
+    private users: UsersFacade
   ) {}
 
   /**
@@ -105,19 +104,6 @@ export class TicketsEffects {
     start: () => this.store.dispatch(new TicketsProcessingAction(true)),
     stop: () => this.store.dispatch(new TicketsProcessingAction(false))
   });
-
-  /**
-   * Special accessor used by both TicketsFacade (forkJoin)
-   * and UsersActionTypes.LOADALL
-   */
-  getUsers(): Observable<User[]> {
-    return this.backend.users().pipe(
-      tap(users => {
-        const usersLoaded = new UsersLoadedAction(users);
-        this.store.dispatch(usersLoaded);
-      })
-    );
-  }
 }
 
 const toTicket = (action: TicketAction): Ticket => action.data;

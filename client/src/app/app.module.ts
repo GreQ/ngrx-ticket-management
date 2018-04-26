@@ -24,6 +24,8 @@ import { TruncatePipe } from './utils/truncate';
 import { BackendService } from './services/backend.service';
 import { TicketsEffects } from './state/tickets/tickets.effects';
 import { UsersEffects } from './state/users/users.effects';
+import { TicketsFacade } from './state/tickets/tickets.facade';
+import { UsersFacade } from './state/users/users.facade';
 
 import { APP_ROUTES } from './app.routes';
 
@@ -51,7 +53,7 @@ import { APP_ROUTES } from './app.routes';
     StoreModule.forRoot(ROOT_REDUCER),
     EffectsModule.forRoot([TicketsEffects, UsersEffects])
   ],
-  providers: [BackendService],
+  providers: [BackendService, TicketsFacade, UsersFacade],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
