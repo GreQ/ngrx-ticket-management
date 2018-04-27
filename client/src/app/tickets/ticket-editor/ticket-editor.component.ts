@@ -1,24 +1,15 @@
 import { Component, OnDestroy } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 
+import { ActivatedRoute } from '@angular/router';
+
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { map, merge } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 
-import { ApplicationState } from '../../state/app.state';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-
+import { TicketsFacade } from '../../state/tickets/tickets.facade';
 import { Ticket, User } from '../../models/ticket';
-import {
-  SelectTicketAction,
-  AssignUserAction,
-  CompleteTicketAction,
-  SaveTicketAction
-} from '../../state/tickets/tickets.actions';
-import { TicketsQuery } from '../../state/tickets/tickets.reducers';
-import { UsersQuery } from '../../state/users/users.reducers';
 
 @Component({
   selector: 'ticket-editor',
@@ -35,9 +26,9 @@ import { UsersQuery } from '../../state/users/users.reducers';
       <div fxLayout fxLayoutAlign="center center" class="centered" @card>
         <ticket-card  [ticket]="ticket$ | async" 
                       [users]="users$ | async" 
-                      (save)="save($event)"
-                      (complete)="complete($event)"
-                      (reassign)="reassign($event)" >
+                      (save)="service.save($event)"
+                      (complete)="service.close($event)"
+                      (reassign)="service.assign($event)" >
         </ticket-card>
       </div>
       <a mat-fab title="Add a new ticket" class="floating-button" routerLink="/ticket/new" >
@@ -46,30 +37,13 @@ import { UsersQuery } from '../../state/users/users.reducers';
    `
 })
 export class TicketEditorComponent implements OnDestroy {
-  users$: Observable<User[]> = this.store.select(UsersQuery.getUsers);
-  ticket$: Observable<Ticket> = this.store.select(
-    TicketsQuery.getSelectedTicket
-  );
+  users$: Observable<User[]> = this.service.users$;
+  ticket$: Observable<Ticket> = this.service.selectedTicket$;
 
-  constructor(
-    public store: Store<ApplicationState>,
-    public route: ActivatedRoute
-  ) {
-    this.watch = makeTicketID$(route).subscribe(ticketId => {
-      this.store.dispatch(new SelectTicketAction(ticketId));
-    });
-  }
-
-  private save(ticket) {
-    this.store.dispatch(new SaveTicketAction(ticket));
-  }
-
-  private complete(ticket) {
-    this.store.dispatch(new CompleteTicketAction(ticket));
-  }
-
-  private reassign(ticket) {
-    this.store.dispatch(new AssignUserAction(ticket));
+  constructor(public service: TicketsFacade, public route: ActivatedRoute) {
+    this.watch = makeTicketID$(route).subscribe(ticketId =>
+      this.service.select(ticketId)
+    );
   }
 
   ngOnDestroy() {

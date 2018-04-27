@@ -1,14 +1,13 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs/Observable';
-import { ApplicationState } from '../../state/app.state';
-import { SaveTicketAction } from '../../state/tickets/tickets.actions';
 
 import { Ticket, User } from '../../models/ticket';
-import { UsersQuery } from '../../state/users/users.reducers';
+import { TicketsFacade } from '../../state/tickets/tickets.facade';
+import { UsersFacade } from '../../state/users/users.facade';
+
 import { updateWithAvatar } from '../../utils/avatars';
 
 @Component({
@@ -34,13 +33,17 @@ import { updateWithAvatar } from '../../utils/avatars';
    `
 })
 export class TicketCreatorComponent {
-  users$: Observable<User[]> = this.store.select(UsersQuery.getUsers);
+  users$: Observable<User[]> = this.service.users$;
   ticket: Ticket = makeNewTicket();
 
-  constructor(public store: Store<ApplicationState>, public router: Router) {}
+  constructor(
+    public service: TicketsFacade,
+    public users: UsersFacade,
+    public router: Router
+  ) {}
 
   save(ticket: Ticket) {
-    this.store.dispatch(new SaveTicketAction(ticket));
+    this.service.save(ticket);
     this.ticket = makeNewTicket();
   }
 

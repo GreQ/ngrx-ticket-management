@@ -1,13 +1,8 @@
 import { Component } from '@angular/core';
 
 import { Ticket } from '../../models/ticket';
-import { FilterTicketsAction } from '../../state/tickets/tickets.actions';
-import { TicketsQuery } from '../../state/tickets/tickets.reducers';
+import { TicketsFacade } from '../../state/tickets/tickets.facade';
 import { fadeInItem, fadeInList } from '../../utils/grid_animations';
-
-import { Store } from '@ngrx/store';
-import { BackendService } from '../../services/backend.service';
-import { ApplicationState } from '../../state/app.state';
 
 @Component({
   selector: 'ticket-list',
@@ -49,12 +44,9 @@ export class TicketListComponent {
   showAll = true;
   searchCriteria = '';
   numTickets = 0;
-  tickets$ = this.store.select(TicketsQuery.getTickets);
+  tickets$ = this.srvTickets.filteredTickets$;
 
-  constructor(
-    private store: Store<ApplicationState>,
-    private backend: BackendService
-  ) {
+  constructor(private srvTickets: TicketsFacade) {
     this.tickets$.subscribe(tickets => {
       this.numTickets = tickets.length;
     });
@@ -73,12 +65,6 @@ export class TicketListComponent {
   }
 
   private updateFilters() {
-    const filterBy = this.searchCriteria;
-    this.store.dispatch(
-      new FilterTicketsAction({
-        filterBy,
-        showAll: this.showAll
-      })
-    );
+    this.srvTickets.filter(this.searchCriteria, this.showAll);
   }
 }

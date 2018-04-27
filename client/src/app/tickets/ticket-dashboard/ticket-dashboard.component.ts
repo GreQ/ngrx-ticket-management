@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
 import { filter } from 'rxjs/operators/filter';
-
-import { BackendService } from '../../services/backend.service';
-import { ApplicationState } from '../../state/app.state';
-import { TicketsQuery } from '../../state/tickets/tickets.reducers';
+import { TicketsFacade } from '../../state/tickets/tickets.facade';
 
 @Component({
   selector: 'ticket-dashboard',
@@ -32,13 +28,8 @@ import { TicketsQuery } from '../../state/tickets/tickets.reducers';
    `
 })
 export class TicketDashboardComponent {
-  processing$ = this.store.select(TicketsQuery.isProcessing);
-  loaded$ = this.store
-    .select(TicketsQuery.getAllTickets)
-    .pipe(filter(value => !!value.length));
+  loaded$ = this.tickets.allTickets$.pipe(filter(value => !!value.length));
+  processing$ = this.tickets.processing$;
 
-  constructor(
-    private store: Store<ApplicationState>,
-    private backend: BackendService
-  ) {}
+  constructor(public tickets: TicketsFacade) {}
 }

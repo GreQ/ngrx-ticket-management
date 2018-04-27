@@ -4,15 +4,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 
 import { Ticket, User } from '../../models/ticket';
-import { TicketsQuery } from '../../state/tickets/tickets.reducers';
-import { UsersQuery } from '../../state/users/users.reducers';
-
-import { Store } from '@ngrx/store';
-import { ApplicationState } from '../../state/app.state';
-import {
-  AssignUserAction,
-  CompleteTicketAction
-} from '../../state/tickets/tickets.actions';
+import { TicketsFacade } from '../../state/tickets/tickets.facade';
 
 @Component({
   selector: 'ticket-grid',
@@ -46,23 +38,15 @@ import {
           fxFlex="calc(50% - 20px)"
           *ngFor="let ticket of (tickets$ | async)" 
           [ticket]="ticket" [users]="users$ | async"
-          (complete)="complete($event)"
-          (reassign)="reassign($event)" >
+          (complete)="service.close($event)"
+          (reassign)="service.assign($event)" >
       </ticket-card>
     </div>
    `
 })
 export class TicketGridComponent {
-  tickets$: Observable<Ticket[]> = this.store.select(TicketsQuery.getTickets);
-  users$: Observable<User[]> = this.store.select(UsersQuery.getUsers);
+  tickets$: Observable<Ticket[]> = this.service.filteredTickets$;
+  users$: Observable<User[]> = this.service.users$;
 
-  constructor(public store: Store<ApplicationState>) {}
-
-  private reassign(ticket) {
-    this.store.dispatch(new AssignUserAction(ticket));
-  }
-
-  private complete(ticket) {
-    this.store.dispatch(new CompleteTicketAction(ticket));
-  }
+  constructor(public service: TicketsFacade) {}
 }
