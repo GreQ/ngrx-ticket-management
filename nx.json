@@ -1,0 +1,42 @@
+{
+  "npmScope": "nrwl-tickets",
+  "implicitDependencies": {
+    "angular.json": "*",
+    "package.json": "*",
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "projects": {
+    "ticket-manager": {
+      "tags": []
+    },
+    "common-utils": {
+      "tags": []
+    },
+    "common-ui-material": {
+      "tags": []
+    },
+    "tickets-ui": {
+      "tags": []
+    },
+    "tickets-state": {
+      "tags": []
+    },
+    "tickets-backend": {
+      "tags": []
+    },
+    "tickets-models": {
+      "tags": []
+    },
+    "users-state": {
+      "tags": []
+    },
+    "users-models": {
+      "tags": []
+    },
+    "common-state": {
+      "tags": []
+    }
+  }
+}

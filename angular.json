@@ -1,0 +1,359 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "",
+  "projects": {
+    "ticket-manager": {
+      "root": "apps/ticket-manager/",
+      "sourceRoot": "apps/ticket-manager/src",
+      "projectType": "application",
+      "prefix": "nrwl",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/ticket-manager",
+            "index": "apps/ticket-manager/src/index.html",
+            "main": "apps/ticket-manager/src/main.ts",
+            "polyfills": "apps/ticket-manager/src/polyfills.ts",
+            "tsConfig": "apps/ticket-manager/tsconfig.app.json",
+            "assets": [
+              "apps/ticket-manager/src/favicon.ico",
+              "apps/ticket-manager/src/assets"
+            ],
+            "styles": [
+              "apps/ticket-manager/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ticket-manager/src/environments/environment.ts",
+                  "with": "apps/ticket-manager/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ticket-manager:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ticket-manager:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ticket-manager:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/ticket-manager/src/test.ts",
+            "polyfills": "apps/ticket-manager/src/polyfills.ts",
+            "tsConfig": "apps/ticket-manager/tsconfig.spec.json",
+            "karmaConfig": "apps/ticket-manager/karma.conf.js",
+            "styles": [
+              "apps/ticket-manager/src/styles.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "apps/ticket-manager/src/favicon.ico",
+              "apps/ticket-manager/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ticket-manager/tsconfig.app.json",
+              "apps/ticket-manager/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "common-utils": {
+      "root": "libs/common/utils",
+      "sourceRoot": "libs/common/utils/src",
+      "projectType": "library",
+      "prefix": "nrwl-tickets",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/common/utils/src/test.ts",
+            "tsConfig": "libs/common/utils/tsconfig.spec.json",
+            "karmaConfig": "libs/common/utils/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/common/utils/tsconfig.lib.json",
+              "libs/common/utils/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "tickets-backend": {
+      "root": "libs/tickets/backend",
+      "sourceRoot": "libs/tickets/backend/src",
+      "projectType": "library",
+      "prefix": "nrwl-tickets",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/tickets/backend/src/test.ts",
+            "tsConfig": "libs/tickets/backend/tsconfig.spec.json",
+            "karmaConfig": "libs/tickets/backend/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/tickets/backend/tsconfig.lib.json",
+              "libs/tickets/backend/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "common-ui-material": {
+      "root": "libs/common/ui/material",
+      "sourceRoot": "libs/common/ui/material/src",
+      "projectType": "library",
+      "prefix": "nrwl-tickets",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/common/ui/material/src/test.ts",
+            "tsConfig": "libs/common/ui/material/tsconfig.spec.json",
+            "karmaConfig": "libs/common/ui/material/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/common/ui/material/tsconfig.lib.json",
+              "libs/common/ui/material/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "tickets-ui": {
+      "root": "libs/tickets/ui",
+      "sourceRoot": "libs/tickets/ui/src",
+      "projectType": "library",
+      "prefix": "nrwl-tickets",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/tickets/ui/src/test.ts",
+            "tsConfig": "libs/tickets/ui/tsconfig.spec.json",
+            "karmaConfig": "libs/tickets/ui/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/tickets/ui/tsconfig.lib.json",
+              "libs/tickets/ui/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "tickets-state": {
+      "root": "libs/tickets/state",
+      "sourceRoot": "libs/tickets/state/src",
+      "projectType": "library",
+      "prefix": "nrwl-tickets",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/tickets/state/src/test.ts",
+            "tsConfig": "libs/tickets/state/tsconfig.spec.json",
+            "karmaConfig": "libs/tickets/state/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/tickets/state/tsconfig.lib.json",
+              "libs/tickets/state/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "tickets-model": {
+      "root": "libs/tickets/models",
+      "sourceRoot": "libs/tickets/models/src",
+      "projectType": "library",
+      "prefix": "nrwl-tickets",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/tickets/models/src/test.ts",
+            "tsConfig": "libs/tickets/models/tsconfig.spec.json",
+            "karmaConfig": "libs/tickets/models/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/tickets/models/tsconfig.lib.json",
+              "libs/tickets/models/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "users-state": {
+      "root": "libs/users/state",
+      "sourceRoot": "libs/users/state/src",
+      "projectType": "library",
+      "prefix": "nrwl-tickets",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/users/state/src/test.ts",
+            "tsConfig": "libs/users/state/tsconfig.spec.json",
+            "karmaConfig": "libs/users/state/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/users/state/tsconfig.lib.json",
+              "libs/users/state/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "users-models": {
+      "root": "libs/users/models",
+      "sourceRoot": "libs/users/models/src",
+      "projectType": "library",
+      "prefix": "nrwl-tickets",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/users/models/src/test.ts",
+            "tsConfig": "libs/users/models/tsconfig.spec.json",
+            "karmaConfig": "libs/users/models/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/users/models/tsconfig.lib.json",
+              "libs/users/models/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "common-state": {
+      "root": "libs/common/state",
+      "sourceRoot": "libs/common/state/src",
+      "projectType": "library",
+      "prefix": "nrwl-tickets",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/common/state/tsconfig.lib.json",
+              "libs/common/state/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/common/state/jest.config.js",
+            "tsConfig": "libs/common/state/tsconfig.spec.json",
+            "setupFile": "libs/common/state/src/test-setup.ts"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "warnings": {
+      "typescriptMismatch": false,
+      "versionMismatch": false
+    },
+    "defaultCollection": "@nrwl/schematics"
+  },
+  "defaultProject": "ticket-manager"
+}

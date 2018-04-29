@@ -1,0 +1,7 @@
+{
+  "extends": "../../../tslint.json",
+  "rules": {
+    "directive-selector": [true, "attribute", "nrwl-tickets", "camelCase"],
+    "component-selector": [true, "element", "nrwl-tickets", "kebab-case"]
+  }
+}

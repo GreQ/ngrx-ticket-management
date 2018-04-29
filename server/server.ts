@@ -1,8 +1,9 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import { registerAppRoutes } from "./server-routes";
+import { gracefulShutdown } from "./graceful-shutdown";
 
-const app = express();
+const app = gracefulShutdown(express());
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -18,3 +19,4 @@ app.use(bodyParser.json());
 registerAppRoutes(app);
 
 app.listen(3000, () => console.log("Example app listening on port 3000!"));
+

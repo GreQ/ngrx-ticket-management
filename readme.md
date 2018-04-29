@@ -1,35 +1,17 @@
 # Exploring State Management
 
-Let's build a ticket managing application, where the user can add, filter, assign, and complete tickets.
+Let's build a ticket managing application, where the user can add, filter, assign, and complete tickets. The goal is to demonstrate usages of NgRx, Effects, Facades, and more.
 
 ![ticket-grid-view](https://user-images.githubusercontent.com/210413/39407154-801b4fb2-4b87-11e8-95d5-53a770404f1f.jpg)
 
-### Starting an App
-
-
-Run `./start.sh` to launch the API server and the client.
-
-> The bash script `start.sh` simply does this: 
-```bash
-   (cd server && npm run server) &
-   (cd client && ng serve --proxy-config proxy.config.json)
-```
-
-
-* The REST server runs on the port 3000, and
-* The Web app runs on the port `http://localhost:4200`. 
-
-Open the web ap in the browser, and you'll see the tickets and users lists.
-
-<br/>
 
 - - -
 
 <br/>
 
-#### Challenging Developer
+#### The Developer-Challenge
 
-We will use the following raw application as a starting point:
+The starting point is a raw application as a starting point:
 
 
 ![raw-ux](https://user-images.githubusercontent.com/210413/33805770-a07c7b22-dd83-11e7-965f-bf24d840b257.jpg)
@@ -65,9 +47,6 @@ export class AppComponent {
 
 <br/>
 
----
-
->  Solutions to the Challenge are detailed in the [Lessons](lessons.md) documentation
 
 ---
 
@@ -78,8 +57,7 @@ export class AppComponent {
 
 * The app should have two screens: the list screen and the details screen.
 * When working on the full UX, use the Angular router to manage the transitions between them.
-* Even though we tend to use NgRx for state management, you can use a different approach if you think it fits better.
-* Write a couple of tests. The goal here is not to build a production-quality app, so don't test every single detail. Two or three tests should be good enough.
+* Use NgRx for state management.
 * Don't forget about error handling and race conditions.
   >  The API server has a random delay.
   >  If you bump it up to say 10 seconds, would the app still work correctly?
@@ -95,9 +73,22 @@ export class AppComponent {
 
 Developers should first focus on data + state management before any UX improvements.
 
-Even though the app seems small, one can easily spend the whole week working on it: perfecting styles, testing every single method, or carefully crafting every single line of code.
+----
 
-> Please don't! Do as much as you can in about 2-4 hours and share the results.
+### Finished Version
 
-The most important part of the interview will come after this one, when we look at the app together, talk about the decisions you have made, etc..
+Run `./start.sh` to launch the API server and the client.
 
+> The bash script `start.sh` simply does this: 
+```bash
+   (npm run server) &
+   (ng serve --proxy-config proxy.config.json)
+```
+
+
+* The REST server runs on the port 3000, and
+* The Web app runs on the port `http://localhost:4200`. 
+
+Open the web ap in the browser, and you'll see the tickets and users lists.
+
+<br/>
