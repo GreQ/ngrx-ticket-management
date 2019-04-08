@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { TicketsFacade } from '@nrwl-tickets/tickets-state';
 import { Ticket } from '@nrwl-tickets/tickets-models';
-import { User } from '@nrwl-tickets/users-models';
+import { User } from '@nrwl-tickets/users-state';
 
 @Component({
   selector: 'ticket-grid',

@@ -22,9 +22,7 @@
               "apps/ticket-manager/src/favicon.ico",
               "apps/ticket-manager/src/assets"
             ],
-            "styles": [
-              "apps/ticket-manager/src/styles.scss"
-            ],
+            "styles": ["apps/ticket-manager/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -71,9 +69,7 @@
             "polyfills": "apps/ticket-manager/src/polyfills.ts",
             "tsConfig": "apps/ticket-manager/tsconfig.spec.json",
             "karmaConfig": "apps/ticket-manager/karma.conf.js",
-            "styles": [
-              "apps/ticket-manager/src/styles.css"
-            ],
+            "styles": ["apps/ticket-manager/src/styles.css"],
             "scripts": [],
             "assets": [
               "apps/ticket-manager/src/favicon.ico",
@@ -88,9 +84,7 @@
               "apps/ticket-manager/tsconfig.app.json",
               "apps/ticket-manager/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -116,9 +110,7 @@
               "libs/common/utils/tsconfig.lib.json",
               "libs/common/utils/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -144,9 +136,7 @@
               "libs/tickets/backend/tsconfig.lib.json",
               "libs/tickets/backend/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -172,9 +162,7 @@
               "libs/common/ui/material/tsconfig.lib.json",
               "libs/common/ui/material/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -200,9 +188,7 @@
               "libs/tickets/ui/tsconfig.lib.json",
               "libs/tickets/ui/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -228,9 +214,7 @@
               "libs/tickets/state/tsconfig.lib.json",
               "libs/tickets/state/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -256,9 +240,7 @@
               "libs/tickets/models/tsconfig.lib.json",
               "libs/tickets/models/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -267,14 +249,14 @@
       "root": "libs/users/state",
       "sourceRoot": "libs/users/state/src",
       "projectType": "library",
-      "prefix": "nrwl-tickets",
       "architect": {
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@nrwl/builders:jest",
           "options": {
             "main": "libs/users/state/src/test.ts",
             "tsConfig": "libs/users/state/tsconfig.spec.json",
-            "karmaConfig": "libs/users/state/karma.conf.js"
+            "jestConfig": "libs/users/state/jest.js",
+            "setupFile": "libs/users/state/src/test-setup.ts"
           }
         },
         "lint": {
@@ -284,37 +266,7 @@
               "libs/users/state/tsconfig.lib.json",
               "libs/users/state/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "users-models": {
-      "root": "libs/users/models",
-      "sourceRoot": "libs/users/models/src",
-      "projectType": "library",
-      "prefix": "nrwl-tickets",
-      "architect": {
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "libs/users/models/src/test.ts",
-            "tsConfig": "libs/users/models/tsconfig.spec.json",
-            "karmaConfig": "libs/users/models/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "libs/users/models/tsconfig.lib.json",
-              "libs/users/models/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -332,9 +284,7 @@
               "libs/common/state/tsconfig.lib.json",
               "libs/common/state/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "test": {
@@ -355,5 +305,18 @@
     },
     "defaultCollection": "@nrwl/schematics"
   },
-  "defaultProject": "ticket-manager"
+  "defaultProject": "ticket-manager",
+  "schematics": {
+    "@nrwl/schematics:library": {
+      "unitTestRunner": "karma",
+      "framework": "angular"
+    },
+    "@nrwl/schematics:application": {
+      "unitTestRunner": "karma",
+      "e2eTestRunner": "protractor"
+    },
+    "@nrwl/schematics:node-application": {
+      "framework": "express"
+    }
+  }
 }

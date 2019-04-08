@@ -1,4 +1,4 @@
-import { User } from '@nrwl-tickets/users-models';
+import { User } from '../models';
 import { UserActionsUnion, UsersActionTypes } from './users.actions';
 
 export interface UsersState {

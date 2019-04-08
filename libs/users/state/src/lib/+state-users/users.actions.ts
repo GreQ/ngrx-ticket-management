@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { User } from '@nrwl-tickets/users-models';
+import { User } from '../models';
 
 export const enum UsersActionTypes {
   USERS = '[users] list',

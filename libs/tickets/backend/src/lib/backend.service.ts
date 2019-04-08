@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { Ticket } from '@nrwl-tickets/tickets-models';
-import { User} from '@nrwl-tickets/users-models';
+import { User} from '@nrwl-tickets/users-state';
 
 const ROOT_URL = 'http://localhost:3000';
 

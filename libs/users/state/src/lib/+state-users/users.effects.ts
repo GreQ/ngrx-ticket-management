@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Store } from '@ngrx/store';
-import { Actions, Effect } from '@ngrx/effects';
+import { Store, select } from '@ngrx/store';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 
 import { of } from 'rxjs/observable/of';
 import { switchMap, withLatestFrom } from 'rxjs/operators';
-
 
 import { UsersQuery } from './users.selectors';
 import { UsersState } from './users.reducers';
@@ -17,10 +16,11 @@ export class UsersEffects {
   /**
    * Used to internal throttle the LoadAllTickets requests
    */
-  loaded$ = this.store.select(UsersQuery.getLoaded);
+  loaded$ = this.store.pipe(select(UsersQuery.getLoaded));
 
   @Effect({ dispatch: false })
-  getUsers$ = this.actions$.ofType(UsersActionTypes.LOADALL).pipe(
+  getUsers$ = this.actions$.pipe(
+    ofType(UsersActionTypes.LOADALL),
     withLatestFrom(this.loaded$),
     switchMap(([_, loaded]) => {
       return loaded ? of(null) : this.service.getUsers();

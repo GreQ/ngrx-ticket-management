@@ -1,5 +1,5 @@
 import { Ticket } from '@nrwl-tickets/tickets-models';
-import { User} from '@nrwl-tickets/users-models';
+import { User} from '@nrwl-tickets/users-state';
 
 export function updateWithAvatar(ticket: Ticket, users: User[]): Ticket {
   updateWithAvatars([ticket], users);

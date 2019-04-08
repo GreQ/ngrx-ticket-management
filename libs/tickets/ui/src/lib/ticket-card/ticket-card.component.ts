@@ -6,7 +6,7 @@ import {
   Output
 } from '@angular/core';
 import { Ticket } from '@nrwl-tickets/tickets-models';
-import { User} from '@nrwl-tickets/users-models';
+import { User} from '@nrwl-tickets/users-state';
 
 @Component({
   selector: 'ticket-card',

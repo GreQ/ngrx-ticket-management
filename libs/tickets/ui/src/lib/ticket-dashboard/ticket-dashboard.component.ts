@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { filter } from 'rxjs/operators/filter';
 import { TicketsFacade } from '@nrwl-tickets/tickets-state';
-import {LoadAllTicketsAction} from '../../../../state/src/lib/+state/tickets.actions';
 
 @Component({
   selector: 'ticket-dashboard',
   styleUrls: ['./ticket-dashboard.component.css'],
   template: `      
     <mat-drawer-container class="example-container" >
-      <mat-drawer mode="side" opened="true" class="mat-elevation-z2">
+      <mat-drawer mode="side" opened="true" disableClose class="mat-elevation-z2">
         <ticket-list></ticket-list>
       </mat-drawer>
       <mat-drawer-content>

@@ -16,6 +16,8 @@
     ],
     "baseUrl": ".",
     "paths": {
+      "core-js/es7/reflect": ["node_modules/core-js/proposals/reflect-metadata"],
+      "core-js/es6/*": ["node_modules/core-js/es/*"],
       "@nrwl-tickets/tickets-backend": [
         "libs/tickets/backend/src/index.ts"
       ],
@@ -42,6 +44,9 @@
       ],
       "@nrwl-tickets/common/state": [
         "libs/common/state/src/index.ts"
+      ],
+      "@nrwl-tickets/persons": [
+        "libs/persons/src/index.ts"
       ]
     }
   },

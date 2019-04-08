@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import {applyTicketFilters, TicketsState} from './tickets.reducers';
+import {applyTicketFilters, TicketsState} from './tickets.reducer';
 
 // ***************************************************************
 //    Feature 'ticket' state definition (see tickets.reducer.ts):

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 
 import { Observable } from 'rxjs/Observable';
 import { reduce, tap } from 'rxjs/operators';
 
-import { User} from '@nrwl-tickets/users-models';
+import { User } from '../models';
 import { BackendService } from '@nrwl-tickets/tickets-backend';
 
 import { UsersQuery } from './users.selectors';
@@ -14,10 +14,10 @@ import { UsersLoadedAction } from './users.actions';
 import { UsersState } from './users.reducers';
 
 @Injectable({
-  providedIn : 'root'
+  providedIn: 'root'
 })
 export class UsersFacade {
-  allUsers$ = this.store.select(UsersQuery.getUsers);
+  allUsers$ = this.store.pipe(select(UsersQuery.getUsers));
 
   constructor(
     private actions$: Actions,

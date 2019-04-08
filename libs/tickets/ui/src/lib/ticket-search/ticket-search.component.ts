@@ -5,7 +5,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./ticket-search.component.css'],
   template: `      
         <mat-icon class="search-icon">search</mat-icon>
-          <input matInput placeholder="Search"
+          <input matInput 
+                 placeholder="Search"
+                 autocomplete="off"
                  #filter fxFlex="auto"
                  [value]="criteria" 
                  (input)="search.emit(filter.value)" >

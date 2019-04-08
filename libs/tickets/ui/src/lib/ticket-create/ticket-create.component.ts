@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { Ticket } from '@nrwl-tickets/tickets-models';
-import { User} from '@nrwl-tickets/users-models';
+import { User} from '@nrwl-tickets/users-state';
 import { TicketsFacade} from '@nrwl-tickets/tickets-state';
 import { UsersFacade } from '@nrwl-tickets/users-state';
 

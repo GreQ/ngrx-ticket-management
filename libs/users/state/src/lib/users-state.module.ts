@@ -4,18 +4,17 @@ import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
-import { usersReducer, INITAL_STATE } from './+state/users.reducers';
-import { UsersFacade } from './+state/users.facade';
-import { UsersEffects } from './+state/users.effects';
+import { PersonSearchService } from './person-search';
+import { usersReducer, INITAL_STATE, UsersFacade, UsersEffects } from './+state-users';
+import { personsReducer, initialState, PersonsFacade, PersonsEffects } from './+state-persons';
 
 @NgModule({
   imports: [
     CommonModule,
-    StoreModule.forFeature('users', usersReducer, {
-      initialState: INITAL_STATE
-    }),
-    EffectsModule.forFeature([UsersEffects])
+    StoreModule.forFeature('users', usersReducer, { initialState: INITAL_STATE }),
+    StoreModule.forFeature('persons', personsReducer, {initialState}),
+    EffectsModule.forFeature([UsersEffects, PersonsEffects])
   ],
-  providers: [UsersEffects, UsersFacade]
+  providers: [UsersFacade, PersonsFacade, PersonSearchService]
 })
 export class UsersStateModule {}

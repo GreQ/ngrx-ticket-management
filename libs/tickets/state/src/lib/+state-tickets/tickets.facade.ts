@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 
 import { UsersFacade } from '@nrwl-tickets/users-state';
@@ -11,22 +11,22 @@ import { TicketsQuery } from './tickets.selectors';
 import { LoadAllTicketsAction, SaveTicketAction } from './tickets.actions';
 import { AssignUserAction, CompleteTicketAction } from './tickets.actions';
 import { SelectTicketAction, FilterTicketsAction } from './tickets.actions';
-import { TicketsState} from './tickets.reducers';
+import { TicketsState } from './tickets.reducer';
 
 /**
  *
  */
 @Injectable({
-  providedIn : 'root'
+  providedIn: 'root'
 })
 export class TicketsFacade {
   users$ = this.users.allUsers$;
 
-  allTickets$ = this.store.select(TicketsQuery.getAllTickets);
-  filteredTickets$ = this.store.select(TicketsQuery.getTickets);
-  selectedTicket$ = this.store.select(TicketsQuery.getSelectedTicket);
+  allTickets$ = this.store.pipe(select(TicketsQuery.getAllTickets));
+  filteredTickets$ = this.store.pipe(select(TicketsQuery.getTickets));
+  selectedTicket$ = this.store.pipe(select(TicketsQuery.getSelectedTicket));
 
-  processing$ = this.store.select(TicketsQuery.isProcessing);
+  processing$ = this.store.pipe(select(TicketsQuery.isProcessing));
 
   constructor(
     private actions$: Actions,
@@ -78,5 +78,5 @@ export class TicketsFacade {
   /**
    * Used to internal throtte the LoadAllTickets requests
    */
-  private loaded$ = this.store.select(TicketsQuery.getLoaded);
+  private loaded$ = this.store.pipe(select(TicketsQuery.getLoaded));
 }
