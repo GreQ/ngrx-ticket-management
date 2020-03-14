@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonUiMaterialModule } from '@nrwl-tickets/common-ui-material';
 
@@ -25,8 +24,6 @@ import {
     FormsModule,
     HttpClientModule,
     CommonUiMaterialModule,
-    FlexLayoutModule,
-    RouterModule,
     TicketsRoutingModule,
     TicketsStateModule,
     UsersStateModule

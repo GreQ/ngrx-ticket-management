@@ -22,7 +22,10 @@
               "apps/ticket-manager/src/favicon.ico",
               "apps/ticket-manager/src/assets"
             ],
-            "styles": ["apps/ticket-manager/src/styles.scss"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "apps/ticket-manager/src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -69,7 +72,10 @@
             "polyfills": "apps/ticket-manager/src/polyfills.ts",
             "tsConfig": "apps/ticket-manager/tsconfig.spec.json",
             "karmaConfig": "apps/ticket-manager/karma.conf.js",
-            "styles": ["apps/ticket-manager/src/styles.css"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "apps/ticket-manager/src/styles.css"
+            ],
             "scripts": [],
             "assets": [
               "apps/ticket-manager/src/favicon.ico",
@@ -84,7 +90,9 @@
               "apps/ticket-manager/tsconfig.app.json",
               "apps/ticket-manager/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
@@ -110,7 +118,9 @@
               "libs/common/utils/tsconfig.lib.json",
               "libs/common/utils/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
@@ -136,7 +146,9 @@
               "libs/tickets/backend/tsconfig.lib.json",
               "libs/tickets/backend/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
@@ -162,7 +174,9 @@
               "libs/common/ui/material/tsconfig.lib.json",
               "libs/common/ui/material/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
@@ -188,7 +202,9 @@
               "libs/tickets/ui/tsconfig.lib.json",
               "libs/tickets/ui/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
@@ -214,7 +230,9 @@
               "libs/tickets/state/tsconfig.lib.json",
               "libs/tickets/state/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
@@ -240,7 +258,9 @@
               "libs/tickets/models/tsconfig.lib.json",
               "libs/tickets/models/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
@@ -266,7 +286,9 @@
               "libs/users/state/tsconfig.lib.json",
               "libs/users/state/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
@@ -284,7 +306,9 @@
               "libs/common/state/tsconfig.lib.json",
               "libs/common/state/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "test": {

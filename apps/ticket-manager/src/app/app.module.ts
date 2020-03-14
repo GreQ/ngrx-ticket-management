@@ -1,5 +1,4 @@
 import {NgModule} from '@angular/core';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -11,19 +10,18 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {CommonStateModule} from '@nrwl-tickets/common/state';
 
 import {NxModule} from '@nrwl/nx';
-
 import {CommonUiMaterialModule} from '@nrwl-tickets/common-ui-material';
 import {environment} from '../environments/environment';
 import {AppRoutingModule} from './app-routes.module';
 import {AppComponent} from './app.component';
 
 @NgModule({
+
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     CommonUiMaterialModule,
-    FlexLayoutModule,
     HttpClientModule,
     NxModule.forRoot(),
 
@@ -36,6 +34,7 @@ import {AppComponent} from './app.component';
     CommonStateModule
   ],
   bootstrap: [AppComponent]
+  
 })
 export class AppModule {
 }
